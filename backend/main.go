@@ -12,7 +12,7 @@ func main() {
 	})
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
-	err := http.ListenAndServe(":80", nil)
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Printf("There was an error: %s\n", err.Error())
 	}
