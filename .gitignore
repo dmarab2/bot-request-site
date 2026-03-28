@@ -32,7 +32,7 @@ go.work.sum
 # .vscode/
 
 bot-request-site
-.png
-.jpeg
-.jpg
-.gif
+*.png
+*.jpeg
+*.jpg
+*.gif
