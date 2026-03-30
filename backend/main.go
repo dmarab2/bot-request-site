@@ -35,13 +35,20 @@ func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Reque
 	respondWithJSON(w, 201, jsonRequest)
 }
 
+func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
+	if cfg.platform != "dev" {
+		respondWithError(w, 404, "This is not the dev environment, you are not allowed to use this endpoint!")
+	}
+}
+
 // A simple beginning function for now.
 func main() {
 	godotenv.Load()
 	dbURL := os.Getenv("DB_URL")
+	fmt.Printf("dburl is %s\n", dbURL)
 	db, err := sql.Open("postgres", dbURL)
 	dbQueries := database.New(db)
-	cfg := &apiConfig{dbQueries, os.Getenv("SECRET_KEY")}
+	cfg := &apiConfig{dbQueries, os.Getenv("SECRET_KEY"), os.Getenv("PLATFORM")}
 	serveMux := http.NewServeMux()
 	server := &http.Server{
 		Addr:    ":8080",

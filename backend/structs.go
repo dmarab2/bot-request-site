@@ -14,6 +14,7 @@ type jsonRequest struct {
 }
 
 type apiConfig struct {
-	db     *database.Queries
-	secret string
+	db       *database.Queries
+	secret   string
+	platform string
 }

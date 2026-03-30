@@ -36,3 +36,4 @@ bot-request-site
 *.jpeg
 *.jpg
 *.gif
+*.http
