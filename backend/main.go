@@ -13,6 +13,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// function to create a single request. only takes the request text itself, the other fields are propagated automatically.
 func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		Body string `json:"body"`
