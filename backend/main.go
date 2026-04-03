@@ -40,6 +40,13 @@ func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	if cfg.platform != "dev" {
 		respondWithError(w, 404, "This is not the dev environment, you are not allowed to use this endpoint!")
 	}
+	err := cfg.db.DeleteAllRequests(req.Context())
+	if err != nil {
+		log.Printf("Error deleting requests: %s\n", err)
+		w.WriteHeader(500)
+		return
+	}
+	w.WriteHeader(201)
 }
 
 // A simple beginning function for now.
