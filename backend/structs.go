@@ -11,6 +11,7 @@ type jsonRequest struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 	RequestText string    `json:"request_text"`
+	Status      string    `json:"status_"`
 }
 
 type apiConfig struct {

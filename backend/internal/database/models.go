@@ -5,14 +5,61 @@
 package database
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"time"
 )
+
+type RequestStatus string
+
+const (
+	RequestStatusOpen       RequestStatus = "open"
+	RequestStatusInProgress RequestStatus = "in_progress"
+	RequestStatusFulfilled  RequestStatus = "fulfilled"
+	RequestStatusCancelled  RequestStatus = "cancelled"
+)
+
+func (e *RequestStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = RequestStatus(s)
+	case string:
+		*e = RequestStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for RequestStatus: %T", src)
+	}
+	return nil
+}
+
+type NullRequestStatus struct {
+	RequestStatus RequestStatus
+	Valid         bool // Valid is true if RequestStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullRequestStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.RequestStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.RequestStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullRequestStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.RequestStatus), nil
+}
 
 type Request struct {
 	ID          int64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	RequestText string
+	Status      RequestStatus
 }
 
 type RequestClaim struct {

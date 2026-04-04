@@ -14,6 +14,7 @@ func turnRequestToJSON(databaseRequest database.Request) jsonRequest {
 		CreatedAt:   databaseRequest.CreatedAt,
 		UpdatedAt:   databaseRequest.UpdatedAt,
 		RequestText: databaseRequest.RequestText,
+		Status:      string(databaseRequest.Status),
 	}
 	return jsonRequest
 }
@@ -38,7 +39,7 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 }
 
 // basic helper function to write a JSON bytearray to the address of the handler that called it
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+func respondWithJSON[T any](w http.ResponseWriter, code int, payload T) {
 	data, err := json.Marshal(payload)
 	if err != nil {
 		log.Printf("Error marshaling json: %s", err)

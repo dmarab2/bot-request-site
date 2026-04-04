@@ -36,6 +36,28 @@ func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Reque
 	respondWithJSON(w, 201, jsonRequest)
 }
 
+func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
+	statusFilter := req.URL.Query().Get("status")
+	var requestSlice []database.Request
+	var err error
+	if statusFilter != "" {
+		requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.RequestStatus(statusFilter))
+	} else {
+		requestSlice, err = cfg.db.GetAllRequests(req.Context())
+	}
+	if err != nil {
+		log.Printf("Error getting requests: %s\n", err)
+		respondWithError(w, 500, "Could not get all requests.")
+		return
+	}
+	jsonRequestSlice := make([]jsonRequest, 0, len(requestSlice))
+	for _, request := range requestSlice {
+		jsonRequest := turnRequestToJSON(request)
+		jsonRequestSlice = append(jsonRequestSlice, jsonRequest)
+	}
+	respondWithJSON(w, 201, jsonRequestSlice)
+}
+
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	if cfg.platform != "dev" {
 		respondWithError(w, 404, "This is not the dev environment, you are not allowed to use this endpoint!")
@@ -67,7 +89,9 @@ func main() {
 	})
 	fileServer := http.FileServer(http.Dir("./static"))
 	serveMux.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	serveMux.HandleFunc("POST /admin/reset", cfg.deleteRequests)
 	serveMux.HandleFunc("POST /api/requests", cfg.createRequestWriter)
+	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
 	/*
 		ticker := time.NewTicker(1 * time.Minute)
 				go func() {
