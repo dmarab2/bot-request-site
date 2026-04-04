@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 	"github.com/joho/godotenv"
@@ -37,24 +38,58 @@ func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Reque
 }
 
 func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
-	statusFilter := req.URL.Query().Get("status")
+	type parameters struct {
+		Status database.RequestStatus
+		ID     int64
+	}
+	requestStatus := req.URL.Query().Get("status")
 	var requestSlice []database.Request
 	var err error
-	if statusFilter != "" {
-		requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.RequestStatus(statusFilter))
+	if requestStatus != "" {
+		params := parameters{}
+		params.Status = database.RequestStatus(requestStatus)
+		cursorID := req.URL.Query().Get("cursor")
+		if cursorID == "" {
+			params.ID, err = cfg.db.GetFirstPageCursor(req.Context())
+			if err != nil {
+				log.Printf("Error getting request cursor: %s", err)
+				respondWithError(w, 500, "Could not get requests.")
+				return
+			}
+			requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.GetAllRequestsFilteredParams(params))
+			if err != nil {
+				log.Printf("Error getting requests: %s\n", err)
+				respondWithError(w, 500, "Could not get requests.")
+				return
+			}
+		} else {
+			params.ID, err = strconv.ParseInt(req.URL.Query().Get("cursor"), 10, 64)
+			if err != nil {
+				log.Printf("Error parsing cursor: %s\n", err)
+				respondWithError(w, 500, "Could not get requests.")
+				return
+			}
+			requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.GetAllRequestsFilteredParams(params))
+			if err != nil {
+				log.Printf("Error getting requests: %s\n", err)
+				respondWithError(w, 500, "Could not get requests.")
+				return
+			}
+		}
 	} else {
 		requestSlice, err = cfg.db.GetAllRequests(req.Context())
-	}
-	if err != nil {
-		log.Printf("Error getting requests: %s\n", err)
-		respondWithError(w, 500, "Could not get all requests.")
-		return
+		if err != nil {
+			log.Printf("Error getting requests: %s\n", err)
+			respondWithError(w, 500, "Could not get all requests.")
+			return
+		}
 	}
 	jsonRequestSlice := make([]jsonRequest, 0, len(requestSlice))
 	for _, request := range requestSlice {
 		jsonRequest := turnRequestToJSON(request)
 		jsonRequestSlice = append(jsonRequestSlice, jsonRequest)
 	}
+	log.Println(jsonRequestSlice)
 	respondWithJSON(w, 201, jsonRequestSlice)
 }
 

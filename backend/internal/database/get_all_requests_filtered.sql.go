@@ -12,10 +12,18 @@ import (
 const getAllRequestsFiltered = `-- name: GetAllRequestsFiltered :many
 SELECT id, created_at, updated_at, request_text, status FROM requests
 WHERE status = $1
+AND id <= $2
+ORDER BY created_at DESC
+LIMIT 5
 `
 
-func (q *Queries) GetAllRequestsFiltered(ctx context.Context, status RequestStatus) ([]Request, error) {
-	rows, err := q.db.QueryContext(ctx, getAllRequestsFiltered, status)
+type GetAllRequestsFilteredParams struct {
+	Status RequestStatus
+	ID     int64
+}
+
+func (q *Queries) GetAllRequestsFiltered(ctx context.Context, arg GetAllRequestsFilteredParams) ([]Request, error) {
+	rows, err := q.db.QueryContext(ctx, getAllRequestsFiltered, arg.Status, arg.ID)
 	if err != nil {
 		return nil, err
 	}
