@@ -50,3 +50,12 @@ func respondWithJSON[T any](w http.ResponseWriter, code int, payload T) {
 	w.WriteHeader(code)
 	w.Write(data)
 }
+
+func metadataMiddleware[T any](cfg *apiConfig, w http.ResponseWriter, code int, payload T) {
+	type metadataPayload struct {
+		Data    T   `json:"data"`
+		PageNum int `json:"page_number"`
+	}
+	metaPay := metadataPayload{payload, 5}
+	respondWithJSON(w, code, metaPay)
+}

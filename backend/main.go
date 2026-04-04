@@ -90,7 +90,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 		jsonRequestSlice = append(jsonRequestSlice, jsonRequest)
 	}
 	log.Println(jsonRequestSlice)
-	respondWithJSON(w, 201, jsonRequestSlice)
+	metadataMiddleware(cfg, w, 201, jsonRequestSlice)
 }
 
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
