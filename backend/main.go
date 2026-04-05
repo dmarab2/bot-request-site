@@ -14,7 +14,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// function to create a single request. only takes the request text itself, the other fields are propagated automatically.
+// createRequestWriter is a function that takes an HTTP POST request to the API from the frontend and
+// inserts a new request into the database. It runs on the "POST /api/requests" pattern.
 func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		Body string `json:"body"`
@@ -37,6 +38,10 @@ func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Reque
 	respondWithJSON(w, 201, jsonRequest)
 }
 
+// getRequests returns a paginated list of requests in the database. It takes two query parameters: status, which
+// corresponds to the status of the requests being asked for, and "after," which is ID of the request used for cursor pagination.
+// Currently, a page is five requests, meaning only five requests are sent per query. This function is tied
+// to the pattern "GET /api/requests"
 func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		Status database.RequestStatus
@@ -48,7 +53,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	if requestStatus != "" {
 		params := parameters{}
 		params.Status = database.RequestStatus(requestStatus)
-		cursorID := req.URL.Query().Get("cursor")
+		cursorID := req.URL.Query().Get("after")
 		if cursorID == "" {
 			params.ID, err = cfg.db.GetFirstPageCursor(req.Context())
 			if err != nil {
@@ -93,6 +98,8 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	metadataMiddleware(cfg, w, 201, jsonRequestSlice)
 }
 
+// deleteRequests is a dev function to reset the database. DO NOT USE IN PROD. Tied to the
+// "POST /admin/reset" pattern.
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	if cfg.platform != "dev" {
 		respondWithError(w, 404, "This is not the dev environment, you are not allowed to use this endpoint!")
@@ -106,7 +113,8 @@ func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(201)
 }
 
-// A simple beginning function for now.
+// main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
+// and starts the server. Right now the server runs on port :8080.
 func main() {
 	godotenv.Load()
 	dbURL := os.Getenv("DB_URL")
