@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/dmarab2/bot-request-site/backend/internal/auth"
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -24,13 +25,13 @@ func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Reque
 	params := parameters{}
 	err := decoder.Decode(&params)
 	if err != nil {
-		log.Printf("Error decoding parameters: %s", err)
+		log.Printf("Error decoding parameters: %s", err.Error())
 		w.WriteHeader(500)
 		return
 	}
 	databaseRequest, err := cfg.db.CreateRequest(req.Context(), params.Body)
 	if err != nil {
-		log.Printf("Error inserting request: %s", err)
+		log.Printf("Error inserting request: %s", err.Error())
 		w.WriteHeader(500)
 		return
 	}
@@ -57,26 +58,26 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 		if cursorID == "" {
 			params.ID, err = cfg.db.GetFirstPageCursor(req.Context())
 			if err != nil {
-				log.Printf("Error getting request cursor: %s", err)
+				log.Printf("Error getting request cursor: %s", err.Error())
 				respondWithError(w, 500, "Could not get requests.")
 				return
 			}
 			requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.GetAllRequestsFilteredParams(params))
 			if err != nil {
-				log.Printf("Error getting requests: %s\n", err)
+				log.Printf("Error getting requests: %s\n", err.Error())
 				respondWithError(w, 500, "Could not get requests.")
 				return
 			}
 		} else {
-			params.ID, err = strconv.ParseInt(req.URL.Query().Get("cursor"), 10, 64)
+			params.ID, err = strconv.ParseInt(req.URL.Query().Get("after"), 10, 64)
 			if err != nil {
-				log.Printf("Error parsing cursor: %s\n", err)
+				log.Printf("Error parsing cursor: %s\n", err.Error())
 				respondWithError(w, 500, "Could not get requests.")
 				return
 			}
 			requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.GetAllRequestsFilteredParams(params))
 			if err != nil {
-				log.Printf("Error getting requests: %s\n", err)
+				log.Printf("Error getting requests: %s\n", err.Error())
 				respondWithError(w, 500, "Could not get requests.")
 				return
 			}
@@ -84,7 +85,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	} else {
 		requestSlice, err = cfg.db.GetAllRequests(req.Context())
 		if err != nil {
-			log.Printf("Error getting requests: %s\n", err)
+			log.Printf("Error getting requests: %s\n", err.Error())
 			respondWithError(w, 500, "Could not get all requests.")
 			return
 		}
@@ -106,11 +107,44 @@ func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	}
 	err := cfg.db.DeleteAllRequests(req.Context())
 	if err != nil {
-		log.Printf("Error deleting requests: %s\n", err)
+		log.Printf("Error deleting requests: %s\n", err.Error())
 		w.WriteHeader(500)
 		return
 	}
 	w.WriteHeader(201)
+}
+
+// createRequestClaimWriter inserts a request claim into the database. The user submits a request ID and a password which
+// ties the claim to a preexisting request and gives it a hashed password which can be checked for later updates.
+func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.Request) {
+	type parameters struct {
+		RequestID    int64  `json:"request_id"`
+		PasswordHash string `json:"password"`
+	}
+	decoder := json.NewDecoder(req.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		log.Printf("Error making a claim for this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+		return
+	}
+	log.Printf("Raw password is: %s\n", params.PasswordHash)
+	params.PasswordHash, err = auth.HashPassword(params.PasswordHash)
+	if err != nil {
+		log.Printf("Error making a claim for this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+		return
+	}
+	log.Printf("Password hash is: %s\n", params.PasswordHash)
+	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), database.CreateRequestClaimParams{params.RequestID, params.PasswordHash})
+	if err != nil {
+		log.Printf("Error making a claim for this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+		return
+	}
+	jsonClaim := turnClaimToJson(databaseClaim)
+	respondWithJSON(w, 201, jsonClaim)
 }
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
@@ -134,6 +168,7 @@ func main() {
 	serveMux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 	serveMux.HandleFunc("POST /admin/reset", cfg.deleteRequests)
 	serveMux.HandleFunc("POST /api/requests", cfg.createRequestWriter)
+	serveMux.HandleFunc("POST /api/request_claims", cfg.createRequestClaimWriter)
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
 	/*
 		ticker := time.NewTicker(1 * time.Minute)
@@ -156,5 +191,6 @@ func main() {
 	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("There was an error: %s\n", err.Error())
+		os.Exit(1)
 	}
 }

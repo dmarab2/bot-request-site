@@ -19,3 +19,9 @@ type apiConfig struct {
 	secret   string
 	platform string
 }
+
+type jsonClaim struct {
+	RequestID int64     `json:"request_id`
+	ClaimedAt time.Time `json:"claimed_at"`
+	ExpiresAt time.Time `json:"expires_at"`
+}

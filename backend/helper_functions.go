@@ -19,6 +19,15 @@ func turnRequestToJSON(databaseRequest database.Request) jsonRequest {
 	return jsonRequest
 }
 
+func turnClaimToJson(databaseClaim database.RequestClaim) jsonClaim {
+	jsonClaim := jsonClaim{
+		RequestID: databaseClaim.RequestID,
+		ClaimedAt: databaseClaim.ClaimedAt,
+		ExpiresAt: databaseClaim.ExpiresAt,
+	}
+	return jsonClaim
+}
+
 // helper function to write a JSON error if something goes wrong during handling
 func respondWithError(w http.ResponseWriter, code int, msg string) {
 	type errorStruct struct {
