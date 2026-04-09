@@ -62,7 +62,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 				respondWithError(w, 500, "Could not get requests.")
 				return
 			}
-			requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.GetAllRequestsFilteredParams(params))
+			requestSlice, err = cfg.db.GetNextRequestPage(req.Context(), database.GetNextRequestPageParams(params))
 			if err != nil {
 				log.Printf("Error getting requests: %s\n", err.Error())
 				respondWithError(w, 500, "Could not get requests.")
@@ -75,7 +75,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 				respondWithError(w, 500, "Could not get requests.")
 				return
 			}
-			requestSlice, err = cfg.db.GetAllRequestsFiltered(req.Context(), database.GetAllRequestsFilteredParams(params))
+			requestSlice, err = cfg.db.GetNextRequestPage(req.Context(), database.GetNextRequestPageParams(params))
 			if err != nil {
 				log.Printf("Error getting requests: %s\n", err.Error())
 				respondWithError(w, 500, "Could not get requests.")

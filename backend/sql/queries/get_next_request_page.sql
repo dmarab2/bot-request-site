@@ -1,4 +1,4 @@
--- name: GetAllRequestsFiltered :many
+-- name: GetNextRequestPage :many
 SELECT * FROM requests
 WHERE status = $1
 AND id <= $2
