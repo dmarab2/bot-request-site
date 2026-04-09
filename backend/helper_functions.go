@@ -62,9 +62,11 @@ func respondWithJSON[T any](w http.ResponseWriter, code int, payload T) {
 
 func metadataMiddleware[T any](cfg *apiConfig, w http.ResponseWriter, code int, payload T) {
 	type metadataPayload struct {
-		Data    T   `json:"data"`
-		PageNum int `json:"page_number"`
+		Data      T    `json:"data"`
+		PageNum   int  `json:"page_number"`
+		NextLimit bool `json:"next_limit"`
+		PrevLimit bool `json:"prev_limit"`
 	}
-	metaPay := metadataPayload{payload, 5}
+	metaPay := metadataPayload{payload, 5, false, false}
 	respondWithJSON(w, code, metaPay)
 }
