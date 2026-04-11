@@ -147,6 +147,20 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 	respondWithJSON(w, 201, jsonClaim)
 }
 
+func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Request) {
+	type parameters struct {
+		requestToChange int64  `json:"request_to_change"`
+		newStatus       string `json:"new_status"`
+	}
+	decoder := json.NewDecoder(req.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		log.Printf("Error changing the status of this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+	}
+}
+
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
 // and starts the server. Right now the server runs on port :8080.
 func main() {
