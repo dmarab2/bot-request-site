@@ -137,7 +137,7 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		return
 	}
 	log.Printf("Password hash is: %s\n", params.PasswordHash)
-	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), database.CreateRequestClaimParams{params.RequestID, params.PasswordHash})
+	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), database.CreateRequestClaimParams{RequestID: params.RequestID, ClaimSecretHash: params.PasswordHash})
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
@@ -147,11 +147,14 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 	respondWithJSON(w, 201, jsonClaim)
 }
 
+// changeRequestStatus takes the ID of a request in the database in the API URL along with a JSON object containing the new status
+// to use, and changes the request fetched to the new status. This function is mapped to the "PUT /api/requests/{requestID}" URL.
 func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
-		requestToChange int64  `json:"request_to_change"`
-		newStatus       string `json:"new_status"`
+		NewStatus       string `json:"new_status"`
+		RequestToChange int64  `json:"request_to_change"`
 	}
+	reqID := req.PathValue("requestID")
 	decoder := json.NewDecoder(req.Body)
 	params := parameters{}
 	err := decoder.Decode(&params)
@@ -159,6 +162,13 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
 	}
+	params.RequestToChange, err = strconv.ParseInt(reqID, 10, 64)
+	returnObj, err := cfg.db.ChangeRequestStatus(req.Context(), database.ChangeRequestStatusParams{Status: database.RequestStatus(params.NewStatus), ID: params.RequestToChange})
+	if err != nil {
+		log.Printf("Error changing the status of this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+	}
+	respondWithJSON(w, 201, returnObj)
 }
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
@@ -184,6 +194,7 @@ func main() {
 	serveMux.HandleFunc("POST /api/requests", cfg.createRequestWriter)
 	serveMux.HandleFunc("POST /api/request_claims", cfg.createRequestClaimWriter)
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
+	serveMux.HandleFunc("PUT /api/requests/{requestID}", cfg.changeRequestStatus)
 	/*
 		ticker := time.NewTicker(1 * time.Minute)
 				go func() {
