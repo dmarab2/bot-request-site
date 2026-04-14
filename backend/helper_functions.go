@@ -60,6 +60,8 @@ func respondWithJSON[T any](w http.ResponseWriter, code int, payload T) {
 	w.Write(data)
 }
 
+// metadataMiddleware is a function that adds metadata to any outgoing JSON request.
+// this currently needs to be updated later once I figure out the necessary metadata to send.
 func metadataMiddleware[T any](cfg *apiConfig, w http.ResponseWriter, code int, payload T) {
 	type metadataPayload struct {
 		Data      T    `json:"data"`
