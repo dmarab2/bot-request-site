@@ -1,3 +1,5 @@
+// helper_functions mostly contains functions that are often used in the main package to write DRY code but aren't core server functionality.
+// this includes JSON conversion, middleware, and response helpers.
 package main
 
 import (

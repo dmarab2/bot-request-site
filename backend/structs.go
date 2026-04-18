@@ -1,3 +1,5 @@
+// structs.go contains helper structs that are used in the main package. These include json versions of requests and claims to
+// return in an HTTP request to a user, and the apiConfig object that holds links to the database.
 package main
 
 import (

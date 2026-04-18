@@ -129,14 +129,12 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	log.Printf("Raw password is: %s\n", params.PasswordHash)
 	params.PasswordHash, err = auth.HashPassword(params.PasswordHash)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	log.Printf("Password hash is: %s\n", params.PasswordHash)
 	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), database.CreateRequestClaimParams{RequestID: params.RequestID, ClaimSecretHash: params.PasswordHash})
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
