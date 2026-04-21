@@ -68,3 +68,15 @@ type RequestClaim struct {
 	ClaimSecretHash string
 	ExpiresAt       time.Time
 }
+
+type RequestTag struct {
+	RequestID int64
+	TagID     int64
+}
+
+type Tag struct {
+	ID        int64
+	TagName   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
