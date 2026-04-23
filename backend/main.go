@@ -169,10 +169,11 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 	respondWithJSON(w, 201, returnObj)
 }
 
+/*
 func (cfg *apiConfig) addTagToRequest(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
-		requestID int64  `json:"request_id"`
-		tagName   string `json:"tag_name"`
+		RequestID int64  `json:"request_id"`
+		TagName   string `json:"tag_name"`
 	}
 	reqID := req.PathValue("requestID")
 	decoder := json.NewDecoder(req.Body)
@@ -183,6 +184,7 @@ func (cfg *apiConfig) addTagToRequest(w http.ResponseWriter, req *http.Request) 
 		respondWithError(w, 500, "Error adding tag")
 	}
 }
+*/
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
 // and starts the server. Right now the server runs on port :8080.

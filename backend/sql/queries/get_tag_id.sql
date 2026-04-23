@@ -1,5 +1,5 @@
 -- name: GetTagID :one
-SELECT tag_id
+SELECT id
 FROM tags
-WHERE tag_name LIKE $1
+WHERE name LIKE $1
 LIMIT 1;

@@ -10,17 +10,18 @@ import (
 )
 
 const createTag = `-- name: CreateTag :one
-INSERT INTO tags(tag_name, created_at, updated_at)
+INSERT INTO tags(name, created_at, updated_at)
 VALUES($1, NOW(), NOW())
-RETURNING id, tag_name, created_at, updated_at
+RETURNING id, name, post_count, created_at, updated_at
 `
 
-func (q *Queries) CreateTag(ctx context.Context, tagName string) (Tag, error) {
-	row := q.db.QueryRowContext(ctx, createTag, tagName)
+func (q *Queries) CreateTag(ctx context.Context, name string) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, createTag, name)
 	var i Tag
 	err := row.Scan(
 		&i.ID,
-		&i.TagName,
+		&i.Name,
+		&i.PostCount,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

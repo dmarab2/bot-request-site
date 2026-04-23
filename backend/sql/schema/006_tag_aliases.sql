@@ -1,0 +1,11 @@
+-- +goose Up
+
+CREATE TABLE tag_aliases (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- +goose DOWN
+DROP TABLE tag_aliases;

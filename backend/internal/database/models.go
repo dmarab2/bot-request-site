@@ -76,7 +76,15 @@ type RequestTag struct {
 
 type Tag struct {
 	ID        int64
-	TagName   string
+	Name      string
+	PostCount int32
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type TagAlias struct {
+	ID        int64
+	Name      string
+	TagID     int64
+	CreatedAt time.Time
 }

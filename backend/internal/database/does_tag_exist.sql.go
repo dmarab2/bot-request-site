@@ -12,11 +12,11 @@ import (
 const doesTagExist = `-- name: DoesTagExist :one
 SELECT COUNT(*)
 FROM tags
-WHERE tag_name = $1
+WHERE name = $1
 `
 
-func (q *Queries) DoesTagExist(ctx context.Context, tagName string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, doesTagExist, tagName)
+func (q *Queries) DoesTagExist(ctx context.Context, name string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, doesTagExist, name)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
