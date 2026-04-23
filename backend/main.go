@@ -158,15 +158,30 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 	err := decoder.Decode(&params)
 	if err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
-		respondWithError(w, 500, "Error making claim")
+		respondWithError(w, 500, "Error changing status")
 	}
 	params.RequestToChange, err = strconv.ParseInt(reqID, 10, 64)
 	returnObj, err := cfg.db.ChangeRequestStatus(req.Context(), database.ChangeRequestStatusParams{Status: database.RequestStatus(params.NewStatus), ID: params.RequestToChange})
 	if err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
-		respondWithError(w, 500, "Error making claim")
+		respondWithError(w, 500, "Error changing status")
 	}
 	respondWithJSON(w, 201, returnObj)
+}
+
+func (cfg *apiConfig) addTagToRequest(w http.ResponseWriter, req *http.Request) {
+	type parameters struct {
+		requestID int64  `json:"request_id"`
+		tagName   string `json:"tag_name"`
+	}
+	reqID := req.PathValue("requestID")
+	decoder := json.NewDecoder(req.Body)
+	params := parameters{}
+	err := decoder.Decode(&params)
+	if err != nil {
+		log.Printf("Error adding tag to request: %s\n", err.Error())
+		respondWithError(w, 500, "Error adding tag")
+	}
 }
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
