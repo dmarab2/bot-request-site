@@ -6,8 +6,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
+	"unicode"
 
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
+	"golang.org/x/text/unicode/norm"
 )
 
 func turnRequestToJSON(databaseRequest database.Request) jsonRequest {
@@ -73,4 +76,35 @@ func metadataMiddleware[T any](cfg *apiConfig, w http.ResponseWriter, code int, 
 	}
 	metaPay := metadataPayload{payload, 5, false, false}
 	respondWithJSON(w, code, metaPay)
+}
+
+// normalizeTagName formats the names of any tags to follow a certain structure involving total lowercase and replacing spaces
+// with underscores.
+// for example "Ran Yakumo" will become "ran_yakumo."
+func normalizeTagName(tagName string) string {
+	tagName = norm.NFKC.String(tagName)
+	tagName = strings.ToLower(tagName)
+	tagName = strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			return '_'
+		}
+		return r
+	}, tagName)
+	var buildString strings.Builder
+	prevUnderscore := false
+
+	for _, r := range tagName {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			buildString.WriteRune(r)
+			prevUnderscore = false
+		} else if r == '_' {
+			if !prevUnderscore {
+				buildString.WriteRune('_')
+				prevUnderscore = true
+			}
+		}
+	}
+	finalString := strings.Trim(buildString.String(), "_")
+	return finalString
+
 }
