@@ -82,8 +82,12 @@ func metadataMiddleware[T any](cfg *apiConfig, w http.ResponseWriter, code int, 
 // with underscores.
 // for example "Ran Yakumo" will become "ran_yakumo."
 func normalizeTagName(tagName string) string {
+	// normalize Unicode in string
 	tagName = norm.NFKC.String(tagName)
+	// make every letter lowercase
 	tagName = strings.ToLower(tagName)
+
+	// replace spaces with underscores
 	tagName = strings.Map(func(r rune) rune {
 		if unicode.IsSpace(r) {
 			return '_'
@@ -93,6 +97,7 @@ func normalizeTagName(tagName string) string {
 	var buildString strings.Builder
 	prevUnderscore := false
 
+	// build a new string, remove repeated underscores
 	for _, r := range tagName {
 		if unicode.IsLetter(r) || unicode.IsDigit(r) {
 			buildString.WriteRune(r)
@@ -104,6 +109,7 @@ func normalizeTagName(tagName string) string {
 			}
 		}
 	}
+	// trim leading/trailing underscores
 	finalString := strings.Trim(buildString.String(), "_")
 	return finalString
 
