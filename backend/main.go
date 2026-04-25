@@ -200,6 +200,7 @@ func main() {
 		Addr:    ":8080",
 		Handler: serveMux,
 	}
+	// root checks the availability of the server for now
 	serveMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, you've requested %s\n", r.URL.Path)
 	})
@@ -210,24 +211,6 @@ func main() {
 	serveMux.HandleFunc("POST /api/request_claims", cfg.createRequestClaimWriter)
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
 	serveMux.HandleFunc("PUT /api/requests/{requestID}", cfg.changeRequestStatus)
-	/*
-		ticker := time.NewTicker(1 * time.Minute)
-				go func() {
-			        // Optional: Clean up if the main function ever returns
-			        defer ticker.Stop()
-
-			        for {
-			            select {
-			            case t := <-ticker.C:
-			                // 3. Your periodic logic here
-			                fmt.Println("Running background task at:", t)
-
-			                // Example: You can access your cfg or db here
-			                // cfg.db.SomeCleanupMethod(context.Background())
-			            }
-			        }
-			    }()
-	*/
 	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("There was an error: %s\n", err.Error())
