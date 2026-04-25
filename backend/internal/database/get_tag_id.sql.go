@@ -7,17 +7,18 @@ package database
 
 import (
 	"context"
+	"database/sql"
 )
 
 const getTagID = `-- name: GetTagID :one
 SELECT id
 FROM tags
-WHERE name LIKE $1
+WHERE name LIKE $1 || '%'
 LIMIT 1
 `
 
-func (q *Queries) GetTagID(ctx context.Context, name string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, getTagID, name)
+func (q *Queries) GetTagID(ctx context.Context, dollar_1 sql.NullString) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getTagID, dollar_1)
 	var id int64
 	err := row.Scan(&id)
 	return id, err
