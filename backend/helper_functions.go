@@ -4,6 +4,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"strings"
@@ -113,4 +114,22 @@ func normalizeTagName(tagName string) string {
 	finalString := strings.Trim(buildString.String(), "_")
 	return finalString
 
+}
+
+func validateClaimInfo(newClaim requestClaimInsert) error {
+	if newClaim.password == nil {
+		return errors.New("User didn't provide a password.")
+	}
+	if *newClaim.password == "" {
+		return errors.New("User submitted an empty password (how did they do that?)")
+	}
+	return nil
+}
+
+func makeCreateClaimParams(requestID int64, password string) database.CreateRequestClaimParams {
+	claimParams := database.CreateRequestClaimParams{
+		RequestID:       requestID,
+		ClaimSecretHash: password,
+	}
+	return claimParams
 }

@@ -118,8 +118,8 @@ func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 // ties the claim to a preexisting request and gives it a hashed password which can be checked for later updates.
 func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
-		RequestID    int64  `json:"request_id"`
-		PasswordHash string `json:"password"`
+		RequestID int64   `json:"request_id"`
+		Password  *string `json:"password"`
 	}
 	decoder := json.NewDecoder(req.Body)
 	params := parameters{}
@@ -129,13 +129,21 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	params.PasswordHash, err = auth.HashPassword(params.PasswordHash)
+	newClaim := requestClaimInsert{requestID: params.RequestID, password: params.Password}
+	if err := validateClaimInfo(newClaim); err != nil {
+		log.Printf("Error making a claim for this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+		return
+	}
+	var passwordHash string
+	passwordHash, err = auth.HashPassword(*newClaim.password)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), database.CreateRequestClaimParams{RequestID: params.RequestID, ClaimSecretHash: params.PasswordHash})
+	claimParams := makeCreateClaimParams(newClaim.requestID, passwordHash)
+	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), claimParams)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")

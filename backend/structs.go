@@ -27,3 +27,8 @@ type jsonClaim struct {
 	ClaimedAt time.Time `json:"claimed_at"`
 	ExpiresAt time.Time `json:"expires_at"`
 }
+
+type requestClaimInsert struct {
+	requestID int64
+	password  *string
+}
