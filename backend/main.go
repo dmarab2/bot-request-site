@@ -121,10 +121,8 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		RequestID int64   `json:"request_id"`
 		Password  *string `json:"password"`
 	}
-	decoder := json.NewDecoder(req.Body)
-	params := parameters{}
-	err := decoder.Decode(&params)
-	if err != nil {
+	var params parameters
+	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
 		return
@@ -136,6 +134,7 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		return
 	}
 	var passwordHash string
+	var err error
 	passwordHash, err = auth.HashPassword(*newClaim.password)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
