@@ -32,3 +32,8 @@ type requestClaimInsert struct {
 	requestID int64
 	password  *string
 }
+
+type ChangeStatusInput struct {
+	RequestID int64
+	NewStatus string
+}

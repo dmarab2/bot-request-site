@@ -134,10 +134,22 @@ func createClaimParams(requestID int64, password string) database.CreateRequestC
 	return claimParams
 }
 
-func modifyRequestParams(requestID int64, status database.RequestStatus) database.ChangeRequestStatusParams {
+func makeRequestParams(newInput ChangeStatusInput) database.ChangeRequestStatusParams {
 	changedParams := database.ChangeRequestStatusParams{
-		Status: status,
-		ID:     requestID,
+		Status: database.RequestStatus(newInput.NewStatus),
+		ID:     newInput.RequestID,
 	}
 	return changedParams
+}
+
+func validateChangeRequestStatus(input ChangeStatusInput) error {
+	if input.RequestID <= 0 {
+		return errors.New("Invalid request ID.")
+	}
+	switch input.NewStatus {
+	case "open", "in_progress", "fulfilled", "cancelled":
+		return nil
+	default:
+		return errors.New("Invalid request status.")
+	}
 }

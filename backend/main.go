@@ -165,11 +165,13 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error changing status")
 	}
-	requestStatusString := params.NewStatus
 	requestToChangeID, err := strconv.ParseInt(reqID, 10, 64)
-	requestStatusToInsert := database.RequestStatus(requestStatusString)
-	modifiedParams := modifyRequestParams(requestToChangeID, requestStatusToInsert)
-	returnObj, err := cfg.db.ChangeRequestStatus(req.Context(), modifiedParams)
+	requestStatusToInsert := database.RequestStatus(params.NewStatus)
+	requestInput := ChangeStatusInput{
+		RequestID: requestToChangeID,
+		NewStatus: string(requestStatusToInsert),
+	}
+	returnObj, err := changeRequestStatusCore(req.Context(), requestInput, cfg.db.ChangeRequestStatus)
 	if err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error changing status")
