@@ -126,10 +126,18 @@ func validateClaimInfo(newClaim requestClaimInsert) error {
 	return nil
 }
 
-func makeCreateClaimParams(requestID int64, password string) database.CreateRequestClaimParams {
+func createClaimParams(requestID int64, password string) database.CreateRequestClaimParams {
 	claimParams := database.CreateRequestClaimParams{
 		RequestID:       requestID,
 		ClaimSecretHash: password,
 	}
 	return claimParams
+}
+
+func modifyRequestParams(requestID int64, status database.RequestStatus) database.ChangeRequestStatusParams {
+	changedParams := database.ChangeRequestStatusParams{
+		Status: status,
+		ID:     requestID,
+	}
+	return changedParams
 }

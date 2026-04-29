@@ -141,7 +141,7 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	claimParams := makeCreateClaimParams(newClaim.requestID, passwordHash)
+	claimParams := createClaimParams(newClaim.requestID, passwordHash)
 	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), claimParams)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
@@ -160,15 +160,16 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 		RequestToChange int64  `json:"request_to_change"`
 	}
 	reqID := req.PathValue("requestID")
-	decoder := json.NewDecoder(req.Body)
 	params := parameters{}
-	err := decoder.Decode(&params)
-	if err != nil {
+	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error changing status")
 	}
-	params.RequestToChange, err = strconv.ParseInt(reqID, 10, 64)
-	returnObj, err := cfg.db.ChangeRequestStatus(req.Context(), database.ChangeRequestStatusParams{Status: database.RequestStatus(params.NewStatus), ID: params.RequestToChange})
+	requestStatusString := params.NewStatus
+	requestToChangeID, err := strconv.ParseInt(reqID, 10, 64)
+	requestStatusToInsert := database.RequestStatus(requestStatusString)
+	modifiedParams := modifyRequestParams(requestToChangeID, requestStatusToInsert)
+	returnObj, err := cfg.db.ChangeRequestStatus(req.Context(), modifiedParams)
 	if err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error changing status")
