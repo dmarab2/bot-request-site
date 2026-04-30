@@ -7,12 +7,15 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
 	"unicode"
 
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 	"golang.org/x/text/unicode/norm"
 )
+
+var regexValidator string = `/[^a-z0-9()-_]/gi`
 
 func turnRequestToJSON(databaseRequest database.Request) jsonRequest {
 	jsonRequest := jsonRequest{
@@ -116,7 +119,7 @@ func normalizeTagName(tagName string) string {
 
 }
 
-func validateClaimInfo(newClaim requestClaimInsert) error {
+func validateClaimPassword(newClaim requestClaimInsert) error {
 	if newClaim.password == nil {
 		return errors.New("User didn't provide a password.")
 	}
@@ -152,4 +155,18 @@ func validateChangeRequestStatus(input ChangeStatusInput) error {
 	default:
 		return errors.New("Invalid request status.")
 	}
+}
+
+func validateTagAddition(input addTagInput) error {
+	if input.RequestID <= 0 {
+		return errors.New("Invalid request ID.")
+	}
+	regexChecker, err := regexp.Compile(regexValidator)
+	if err != nil {
+		return errors.New("Unable to start the regex checking process.")
+	}
+	if regexChecker.MatchString(input.tagName) {
+		return errors.New("Forbidden characters found in tag name!")
+	}
+	return nil
 }

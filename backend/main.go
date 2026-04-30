@@ -128,21 +128,13 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		return
 	}
 	newClaim := requestClaimInsert{requestID: params.RequestID, password: params.Password}
-	if err := validateClaimInfo(newClaim); err != nil {
-		log.Printf("Error making a claim for this request: %s\n", err.Error())
-		respondWithError(w, 500, "Error making claim")
-		return
-	}
-	var passwordHash string
-	var err error
-	passwordHash, err = auth.HashPassword(*newClaim.password)
+	passwordHash, err := auth.HashPassword(*newClaim.password)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	claimParams := createClaimParams(newClaim.requestID, passwordHash)
-	databaseClaim, err := cfg.db.CreateRequestClaim(req.Context(), claimParams)
+	databaseClaim, err := createRequestClaimCore(req.Context(), newClaim, passwordHash, cfg.db.CreateRequestClaim)
 	if err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
@@ -182,16 +174,22 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 /*
 func (cfg *apiConfig) addTagToRequest(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
-		RequestID int64  `json:"request_id"`
-		TagName   string `json:"tag_name"`
+		TagName string `json:"tag_name"`
 	}
 	reqID := req.PathValue("requestID")
-	decoder := json.NewDecoder(req.Body)
-	params := parameters{}
-	err := decoder.Decode(&params)
+	intReqID, err := strconv.ParseInt(reqID, 10, 64)
 	if err != nil {
 		log.Printf("Error adding tag to request: %s\n", err.Error())
 		respondWithError(w, 500, "Error adding tag")
+	}
+	params := parameters{}
+	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
+		log.Printf("Error adding tag to request: %s\n", err.Error())
+		respondWithError(w, 500, "Error adding tag")
+	}
+	tagToAdd := addTagInput{
+		RequestID: intReqID,
+		tagName:   params.TagName,
 	}
 }
 */

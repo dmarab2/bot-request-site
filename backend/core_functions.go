@@ -17,3 +17,16 @@ func changeRequestStatusCore(
 	params := makeRequestParams(input)
 	return updateFunction(context, params)
 }
+
+func createRequestClaimCore(
+	context context.Context,
+	newClaim requestClaimInsert,
+	hashedPassword string,
+	insertFunction func(context.Context, database.CreateRequestClaimParams) (database.RequestClaim, error),
+) (database.RequestClaim, error) {
+	if err := validateClaimPassword(newClaim); err != nil {
+		return database.RequestClaim{}, err
+	}
+	claimParams := createClaimParams(newClaim.requestID, hashedPassword)
+	return insertFunction(context, claimParams)
+}

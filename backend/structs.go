@@ -37,3 +37,8 @@ type ChangeStatusInput struct {
 	RequestID int64
 	NewStatus string
 }
+
+type addTagInput struct {
+	RequestID int64
+	tagName   string
+}
