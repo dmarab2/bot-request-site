@@ -28,6 +28,11 @@ type jsonClaim struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
+type jsonRequestTagLink struct {
+	RequestID int64 `json:"request_id"`
+	TagID     int64 `json:"tag_id"`
+}
+
 type requestClaimInsert struct {
 	requestID int64
 	password  *string
@@ -38,7 +43,8 @@ type ChangeStatusInput struct {
 	NewStatus string
 }
 
-type addTagInput struct {
+type linkTagInput struct {
 	RequestID int64
+	tagID     int64
 	tagName   string
 }

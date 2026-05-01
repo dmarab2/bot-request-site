@@ -2,7 +2,6 @@
 SELECT name
 FROM tags
 WHERE name LIKE $1 || '%'
-ORDER BY post_count DESC
 
 UNION
 
@@ -11,4 +10,5 @@ FROM tags
 WHERE name % $1
 
 
+ORDER BY post_count DESC
 LIMIT 10;

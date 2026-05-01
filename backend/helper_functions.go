@@ -3,6 +3,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
@@ -35,6 +36,14 @@ func turnClaimToJson(databaseClaim database.RequestClaim) jsonClaim {
 		ExpiresAt: databaseClaim.ExpiresAt,
 	}
 	return jsonClaim
+}
+
+func turnLinkToJson(databaseTag database.RequestTag) jsonRequestTagLink {
+	jsonLink := jsonRequestTagLink{
+		RequestID: databaseTag.RequestID,
+		TagID:     databaseTag.TagID,
+	}
+	return jsonLink
 }
 
 // helper function to write a JSON error if something goes wrong during handling
@@ -157,7 +166,15 @@ func validateChangeRequestStatus(input ChangeStatusInput) error {
 	}
 }
 
-func validateTagAddition(input addTagInput) error {
+func getTagByID(context context.Context, tagID int64, db *database.Queries) (database.Tag, error) {
+	tag, err := db.GetTagByID(context, tagID)
+	if err != nil {
+		return database.Tag{}, errors.New("Could not get tag from database.")
+	}
+	return tag, nil
+}
+
+func validateTagLinkToRequest(input linkTagInput) error {
 	if input.RequestID <= 0 {
 		return errors.New("Invalid request ID.")
 	}
@@ -169,4 +186,12 @@ func validateTagAddition(input addTagInput) error {
 		return errors.New("Forbidden characters found in tag name!")
 	}
 	return nil
+}
+
+func makeTagLinkStruct(input linkTagInput) database.CreateRequestTagLinkParams {
+	tagLinkParams := database.CreateRequestTagLinkParams{
+		RequestID: input.RequestID,
+		TagID:     input.tagID,
+	}
+	return tagLinkParams
 }

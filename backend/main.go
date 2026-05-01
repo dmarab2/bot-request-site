@@ -104,6 +104,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	if cfg.platform != "dev" {
 		respondWithError(w, 404, "This is not the dev environment, you are not allowed to use this endpoint!")
+		return
 	}
 	err := cfg.db.DeleteAllRequests(req.Context())
 	if err != nil {
@@ -156,6 +157,7 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error changing status")
+		return
 	}
 	requestToChangeID, err := strconv.ParseInt(reqID, 10, 64)
 	requestStatusToInsert := database.RequestStatus(params.NewStatus)
@@ -167,32 +169,49 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 	if err != nil {
 		log.Printf("Error changing the status of this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error changing status")
+		return
 	}
 	respondWithJSON(w, 201, returnObj)
 }
 
-/*
-func (cfg *apiConfig) addTagToRequest(w http.ResponseWriter, req *http.Request) {
+func (cfg *apiConfig) linkTagToRequest(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
-		TagName string `json:"tag_name"`
+		TagID int64 `json:"tag_id"`
 	}
 	reqID := req.PathValue("requestID")
 	intReqID, err := strconv.ParseInt(reqID, 10, 64)
 	if err != nil {
 		log.Printf("Error adding tag to request: %s\n", err.Error())
 		respondWithError(w, 500, "Error adding tag")
+		return
 	}
 	params := parameters{}
 	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
 		log.Printf("Error adding tag to request: %s\n", err.Error())
 		respondWithError(w, 500, "Error adding tag")
+		return
 	}
-	tagToAdd := addTagInput{
+	relevantTag, err := getTagByID(req.Context(), params.TagID, cfg.db)
+	if err != nil {
+		log.Printf("Error adding tag to request: %s\n", err.Error())
+		respondWithError(w, 500, "Error adding tag")
+		return
+	}
+	tagToLink := linkTagInput{
 		RequestID: intReqID,
-		tagName:   params.TagName,
+		tagName:   relevantTag.Name,
+		tagID:     relevantTag.ID,
 	}
+	tagLinkParams := makeTagLinkStruct(tagToLink)
+	requestTag, err := cfg.db.CreateRequestTagLink(req.Context(), tagLinkParams)
+	if err != nil {
+		log.Printf("Error adding tag to request: %s\n", err.Error())
+		respondWithError(w, 500, "Error adding tag")
+		return
+	}
+	jsonLink := turnLinkToJson(requestTag)
+	respondWithJSON(w, 201, jsonLink)
 }
-*/
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
 // and starts the server. Right now the server runs on port :8080.
@@ -214,7 +233,7 @@ func main() {
 	})
 	fileServer := http.FileServer(http.Dir("./static"))
 	serveMux.Handle("/static/", http.StripPrefix("/static/", fileServer))
-	serveMux.HandleFunc("POST /admin/reset", cfg.deleteRequests)
+	serveMux.HandleFunc("DELETE /admin/reset", cfg.deleteRequests)
 	serveMux.HandleFunc("POST /api/requests", cfg.createRequestWriter)
 	serveMux.HandleFunc("POST /api/request_claims", cfg.createRequestClaimWriter)
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
