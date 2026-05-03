@@ -174,6 +174,8 @@ func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Reque
 	respondWithJSON(w, 201, returnObj)
 }
 
+// linkTagToRequest adds a row to the request_tags table that links a tag to a request. This would be accessed from a page
+// representing a single request. This probably will only be accessible by mod/admin (as if there would be any but me)
 func (cfg *apiConfig) linkTagToRequest(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		TagID int64 `json:"tag_id"`

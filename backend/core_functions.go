@@ -6,6 +6,8 @@ import (
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
 
+// changeRequestStatusCore is the core logic of the changeRequestStatus writer function in main. It checks to make sure the new status
+// passed in is valid, then it makes a parameters struct from it and adds the change to the database using a passed in dependency.
 func changeRequestStatusCore(
 	context context.Context,
 	input ChangeStatusInput,
@@ -18,6 +20,8 @@ func changeRequestStatusCore(
 	return updateFunction(context, params)
 }
 
+// createRequestClaimCore is the core logic of the createRequestClaimWriter function in main. It validates the provided password,
+// creates a parameters struct from it, and then passes it into the dependency function to insert it into the database.
 func createRequestClaimCore(
 	context context.Context,
 	newClaim requestClaimInsert,
