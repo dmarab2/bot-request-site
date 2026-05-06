@@ -188,10 +188,19 @@ func validateTagLinkToRequest(input linkTagInput) error {
 	return nil
 }
 
-func makeTagLinkStruct(input linkTagInput) database.CreateRequestTagLinkParams {
+func makeTagLinkParams(input linkTagInput) database.CreateRequestTagLinkParams {
 	tagLinkParams := database.CreateRequestTagLinkParams{
 		RequestID: input.RequestID,
 		TagID:     input.tagID,
 	}
 	return tagLinkParams
+}
+
+func makeTagLinkInput(requestID int64, relevantTag database.Tag) linkTagInput {
+	tagToLink := linkTagInput{
+		RequestID: requestID,
+		tagName:   relevantTag.Name,
+		tagID:     relevantTag.ID,
+	}
+	return tagToLink
 }

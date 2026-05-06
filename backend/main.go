@@ -199,13 +199,7 @@ func (cfg *apiConfig) linkTagToRequest(w http.ResponseWriter, req *http.Request)
 		respondWithError(w, 500, "Error adding tag")
 		return
 	}
-	tagToLink := linkTagInput{
-		RequestID: intReqID,
-		tagName:   relevantTag.Name,
-		tagID:     relevantTag.ID,
-	}
-	tagLinkParams := makeTagLinkStruct(tagToLink)
-	requestTag, err := cfg.db.CreateRequestTagLink(req.Context(), tagLinkParams)
+	requestTag, err := linkTagToRequestCore(req.Context(), intReqID, relevantTag, cfg.db.CreateRequestTagLink)
 	if err != nil {
 		log.Printf("Error adding tag to request: %s\n", err.Error())
 		respondWithError(w, 500, "Error adding tag")

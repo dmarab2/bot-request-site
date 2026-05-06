@@ -37,3 +37,17 @@ func createRequestClaimCore(
 	claimParams := createClaimParams(newClaim.requestID, hashedPassword)
 	return insertFunction(context, claimParams)
 }
+
+func linkTagToRequestCore(
+	context context.Context,
+	requestID int64,
+	relevantTag database.Tag,
+	linkerFunction func(context.Context, database.CreateRequestTagLinkParams) (database.RequestTag, error),
+) (database.RequestTag, error) {
+	tagLink := makeTagLinkInput(requestID, relevantTag)
+	if err := validateTagLinkToRequest(tagLink); err != nil {
+		return database.RequestTag{}, err
+	}
+	tagLinkParams := makeTagLinkParams(tagLink)
+	return linkerFunction(context, tagLinkParams)
+}
