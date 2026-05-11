@@ -1,6 +1,7 @@
 // core_functions.go contains the core, "pure" logic of the handler functions in main.go.
 // I separated the logic for a few reasons, one being to make them easier to test, another to prevent changes to the way I grab
 // the data from the frontend from affecting the core logic, and also because I needed practice with writing code in this manner.
+// Every function thus takes in dependencies and does not mutate anything outside of itself.
 package main
 
 import (
