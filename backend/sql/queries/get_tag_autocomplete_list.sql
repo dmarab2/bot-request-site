@@ -11,4 +11,4 @@ WHERE name % $1
 
 
 ORDER BY post_count DESC
-LIMIT 10;
+LIMIT 5;
