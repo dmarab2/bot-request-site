@@ -39,7 +39,7 @@ func createRequestClaimCore(
 	return insertFunction(context, claimParams)
 }
 
-// linkTagToRequestCore is the core logic of the linkTagToRequest handler in main. It creates a tagLink input stuct that is validated
+// linkTagToRequestCore is the core logic of the linkTagToRequest handler in main. It creates a tagLink input struct that is validated
 // by checking to see if the id and name is valid, and then uses the linker function to add a row to the linker table.
 func linkTagToRequestCore(
 	context context.Context,
