@@ -99,6 +99,18 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	metadataMiddleware(cfg, w, 201, jsonRequestSlice)
 }
 
+func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request) {
+	type parameters struct {
+		RequestID int64
+	}
+	params := parameters{}
+	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
+		log.Printf("Error trying to open this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error opening request")
+		return
+	}
+}
+
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD. Tied to the
 // "POST /admin/reset" pattern.
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
@@ -234,6 +246,7 @@ func main() {
 	serveMux.HandleFunc("POST /api/request_claims", cfg.createRequestClaimWriter)
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
 	serveMux.HandleFunc("PUT /api/requests/{requestID}", cfg.changeRequestStatus)
+	serveMux.HandleFunc("POST /api/request_tag_links", cfg.linkTagToRequest)
 	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("There was an error: %s\n", err.Error())
