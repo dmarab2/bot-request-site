@@ -109,6 +109,14 @@ func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request)
 		respondWithError(w, 500, "Error opening request")
 		return
 	}
+	retrievedRequest, err := cfg.db.GetSingleRequest(req.Context(), params.RequestID)
+	if err != nil {
+		log.Printf("Error trying to open this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error opening request")
+		return
+	}
+	jsonRequest := turnRequestToJSON(retrievedRequest)
+	respondWithJSON(w, 500, jsonRequest)
 }
 
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD. Tied to the
