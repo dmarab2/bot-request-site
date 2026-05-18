@@ -99,6 +99,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	metadataMiddleware(cfg, w, 201, jsonRequestSlice)
 }
 
+// getSingleRequest does just that, and is used mostly for viewing a request that is clicked on in the frontend.
 func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		RequestID int64
