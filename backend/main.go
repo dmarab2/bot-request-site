@@ -100,6 +100,7 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 }
 
 // getSingleRequest does just that, and is used mostly for viewing a request that is clicked on in the frontend.
+// note, this would also include viewing any tags that are attached to this request as well.
 func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		RequestID int64
