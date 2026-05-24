@@ -54,3 +54,11 @@ func linkTagToRequestCore(
 	tagLinkParams := makeTagLinkParams(tagLink)
 	return linkerFunction(context, tagLinkParams)
 }
+
+func getSingleRequestCore(
+	context context.Context,
+	requestID int64,
+	getFunction func(context.Context, int64) (database.Request, error),
+) (database.Request, error) {
+	return database.Request{}, nil
+}
