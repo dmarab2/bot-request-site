@@ -55,6 +55,7 @@ func linkTagToRequestCore(
 	return linkerFunction(context, tagLinkParams)
 }
 
+// to be written later
 func getSingleRequestCore(
 	context context.Context,
 	requestID int64,
