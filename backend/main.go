@@ -102,16 +102,9 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 // getSingleRequest does just that, and is used mostly for viewing a request that is clicked on in the frontend.
 // note, this would also include viewing any tags that are attached to this request as well.
 func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request) {
-	type parameters struct {
-		RequestID int64
-	}
-	params := parameters{}
-	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
-		log.Printf("Error trying to open this request: %s\n", err.Error())
-		respondWithError(w, 500, "Error opening request")
-		return
-	}
-	retrievedRequest, err := cfg.db.GetSingleRequest(req.Context(), params.RequestID)
+	reqID := req.PathValue("requestID")
+	requestID, err := strconv.ParseInt(reqID, 10, 64)
+	retrievedRequest, err := getSingleRequestCore(req.Context(), requestID, cfg.db.GetSingleRequest)
 	if err != nil {
 		log.Printf("Error trying to open this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error opening request")
@@ -257,6 +250,7 @@ func main() {
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
 	serveMux.HandleFunc("PUT /api/requests/{requestID}", cfg.changeRequestStatus)
 	serveMux.HandleFunc("POST /api/request_tag_links", cfg.linkTagToRequest)
+	serveMux.HandleFunc("GET /api/requests/{requestID}", cfg.getSingleRequest)
 	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("There was an error: %s\n", err.Error())
