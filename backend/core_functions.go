@@ -56,6 +56,7 @@ func linkTagToRequestCore(
 }
 
 // getSingleRequestCore is a simple function, and simply returns the result of pulling a single request from the database.
+// this function may or may not evolve (like having middleware added to it)
 func getSingleRequestCore(
 	context context.Context,
 	requestID int64,
