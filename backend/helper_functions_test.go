@@ -23,3 +23,11 @@ func TestValidateClaimPassword(t *testing.T) {
 		t.Errorf("Test for validate claim password should have failed due to a nil pointer")
 	}
 }
+
+func TestNormalizeTagName(t *testing.T) {
+	testString := "Ran Yakumo"
+	returnedString := normalizeTagName(testString)
+	if returnedString != "ran_yakumo" {
+		t.Errorf("String 'Ran Yakumo' should have converted to 'ran_yakumo' and didn't")
+	}
+}
