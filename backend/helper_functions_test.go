@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// TestRespondWithError ensures that respondWithError properly writes the error passed to it.
 func TestRespondWithError(t *testing.T) {
 	type jsonDecoder struct {
 		TestErrorHolder string `json:"error"`
@@ -23,6 +24,29 @@ func TestRespondWithError(t *testing.T) {
 	}
 	if testStruct.TestErrorHolder != "TEST ERROR" {
 		t.Errorf("testErrorHolder is %s instead of TEST ERROR", testStruct.TestErrorHolder)
+	}
+
+}
+
+// TestRespondWithJson ensure that respondWithJson returns the code and data that has been passed to it.
+func TestRespondWithJson(t *testing.T) {
+	type testObject struct {
+		TestStringProperty string `json:"test_string"`
+	}
+	w := httptest.NewRecorder()
+	testJsonObject := testObject{TestStringProperty: "TEST PROPERTY"}
+	respondWithJSON(w, 201, testJsonObject)
+	resp := w.Result()
+	defer resp.Body.Close()
+	if resp.StatusCode != 201 {
+		t.Errorf("Status code returned was %d instead of %d", resp.StatusCode, 201)
+	}
+	receiverStruct := testObject{}
+	if err := json.NewDecoder(resp.Body).Decode(&receiverStruct); err != nil {
+		t.Errorf("Error decoding the test message: %s", err.Error())
+	}
+	if receiverStruct.TestStringProperty != "TEST PROPERTY" {
+		t.Errorf("TestStringProperty is %s instead of TEST PROPERTY", receiverStruct.TestStringProperty)
 	}
 
 }
