@@ -73,6 +73,24 @@ func TestValidateClaimPassword(t *testing.T) {
 	}
 }
 
+func TestValidateChangeRequestStatus(t *testing.T) {
+	testInput := ChangeStatusInput{20, "open"}
+	err := validateChangeRequestStatus(testInput)
+	if err != nil {
+		t.Errorf("Test for validating request status failed with %s", err.Error())
+	}
+	testInput = ChangeStatusInput{-5, "open"}
+	err = validateChangeRequestStatus(testInput)
+	if err == nil {
+		t.Errorf("Test for validating request status passed when it should've failed")
+	}
+	testInput = ChangeStatusInput{25, "BAD STATUS"}
+	err = validateChangeRequestStatus(testInput)
+	if err == nil {
+		t.Errorf("Test for validating request status passed when it should've failed")
+	}
+}
+
 // TestNormalizeTagName makes sure that all strings are normalized to the same format no matter what the string contains.
 func TestNormalizeTagName(t *testing.T) {
 	testString := "Ran Yakumo"
