@@ -17,7 +17,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-var regexValidator string = `/[^a-z0-9()-_]/gi`
+var regexValidator string = `[^a-z0-9()_-]`
 
 func turnRequestToJSON(databaseRequest database.Request) jsonRequest {
 	jsonRequest := jsonRequest{

@@ -91,6 +91,25 @@ func TestValidateChangeRequestStatus(t *testing.T) {
 	}
 }
 
+func TestValidateTagLinkToRequest(t *testing.T) {
+	testInput := linkTagInput{10, 10, "test"}
+	err := validateTagLinkToRequest(testInput)
+	if err != nil {
+		t.Errorf("Test for validating tag links failed with %s", err.Error())
+	}
+	testInput.RequestID = -5
+	err = validateTagLinkToRequest(testInput)
+	if err == nil {
+		t.Errorf("Tag link validation passed when it should've failed due to negative request ID")
+	}
+	testInput.RequestID = 10
+	testInput.tagName = "&&$$@#*$"
+	err = validateTagLinkToRequest(testInput)
+	if err == nil {
+		t.Errorf("Tag link validation passed when it should've failed due to invalid tag name")
+	}
+}
+
 // TestNormalizeTagName makes sure that all strings are normalized to the same format no matter what the string contains.
 func TestNormalizeTagName(t *testing.T) {
 	testString := "Ran Yakumo"
