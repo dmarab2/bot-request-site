@@ -73,6 +73,7 @@ func TestValidateClaimPassword(t *testing.T) {
 	}
 }
 
+// TestValidateChangeRequestStatus ensures that new status changes are valid statuses.
 func TestValidateChangeRequestStatus(t *testing.T) {
 	testInput := ChangeStatusInput{20, "open"}
 	err := validateChangeRequestStatus(testInput)
@@ -91,6 +92,7 @@ func TestValidateChangeRequestStatus(t *testing.T) {
 	}
 }
 
+// TestValidateTagLinkToRequest makes sure that new link tags are valid under several constraints.
 func TestValidateTagLinkToRequest(t *testing.T) {
 	testInput := linkTagInput{10, 10, "test"}
 	err := validateTagLinkToRequest(testInput)
