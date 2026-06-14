@@ -119,4 +119,9 @@ func TestNormalizeTagName(t *testing.T) {
 	if returnedString != "ran_yakumo" {
 		t.Errorf("String 'Ran Yakumo' should have converted to 'ran_yakumo' and didn't")
 	}
+	testString = "Test Space Underscore"
+	returnedString = normalizeTagName(testString)
+	if returnedString != "test_space_underscore" {
+		t.Errorf("String 'Test Space Underscore' should have converted to 'test_space_underscore' and didn't")
+	}
 }
