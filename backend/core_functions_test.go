@@ -9,7 +9,7 @@ import (
 )
 
 // TestGetSingleRequestCore simply tests the logic in getSingleRequestCore to make sure it always returns a request according to
-// the id it was given, even if the logic is updated and has middleware added to it.
+// the id it was given, even if the logic is updated and has middleware added to it. Note that the function core may change.
 func TestGetSingleRequestCore(t *testing.T) {
 	testContext := t.Context()
 	testGetFunction := func(c context.Context, i int64) (database.Request, error) {
