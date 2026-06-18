@@ -31,3 +31,6 @@ func TestGetSingleRequestCore(t *testing.T) {
 	}
 
 }
+
+func testCreateRequestclaimCore(t *testing.T) {
+}
