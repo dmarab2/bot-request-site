@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dmarab2/bot-request-site/backend/internal/auth"
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
 
@@ -32,5 +33,28 @@ func TestGetSingleRequestCore(t *testing.T) {
 
 }
 
-func testCreateRequestclaimCore(t *testing.T) {
+func TestCreateRequestClaimCore(t *testing.T) {
+	testContext := t.Context()
+	testPassword := "TestPassword$%"
+	testClaim := requestClaimInsert{10, &testPassword}
+	hashedTestPassword, err := auth.HashPassword(*testClaim.password)
+	if err != nil {
+		t.Errorf("Password failed to hash properly.")
+	}
+	testInsertFunction := func(c context.Context, d database.CreateRequestClaimParams) (database.RequestClaim, error) {
+		testRequestClaim := database.RequestClaim{
+			RequestID:       d.RequestID,
+			ClaimedAt:       time.Now(),
+			ClaimSecretHash: d.ClaimSecretHash,
+			ExpiresAt:       time.Now().AddDate(0, 0, 1),
+		}
+		return testRequestClaim, nil
+	}
+	receivedRequestClaim, err := createRequestClaimCore(testContext, testClaim, hashedTestPassword, testInsertFunction)
+	if err != nil {
+		t.Errorf("The test for createRequestClaimCore returned an error.")
+	}
+	if receivedRequestClaim.RequestID != testClaim.requestID {
+		t.Errorf("The test for createRequestClaimCore returned %d instead of %d.", receivedRequestClaim.RequestID, testClaim.requestID)
+	}
 }
