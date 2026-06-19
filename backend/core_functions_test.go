@@ -33,6 +33,7 @@ func TestGetSingleRequestCore(t *testing.T) {
 
 }
 
+// TestCreateRequestClaimCore ensures that createRequestClaimCore always does its basic job even if it later changes.
 func TestCreateRequestClaimCore(t *testing.T) {
 	testContext := t.Context()
 	testPassword := "TestPassword$%"
