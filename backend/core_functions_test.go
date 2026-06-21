@@ -59,3 +59,29 @@ func TestCreateRequestClaimCore(t *testing.T) {
 		t.Errorf("The test for createRequestClaimCore returned %d instead of %d.", receivedRequestClaim.RequestID, testClaim.requestID)
 	}
 }
+
+func TestLinkTagToRequestCore(t *testing.T) {
+	testContext := t.Context()
+	testRequestID := int64(15)
+	testTag := database.Tag{
+		ID:        12,
+		Name:      "TestTag",
+		PostCount: 20,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	testLinkerFunction := func(c context.Context, d database.CreateRequestTagLinkParams) (database.RequestTag, error) {
+		testRequestTag := database.RequestTag{
+			RequestID: d.RequestID,
+			TagID:     d.TagID,
+		}
+		return testRequestTag, nil
+	}
+	testRequestTag, err := linkTagToRequestCore(testContext, testRequestID, testTag, testLinkerFunction)
+	if err != nil {
+		t.Errorf("The test run of linkTagToRequestCore returned an error: %s", err.Error())
+	}
+	if testRequestTag.RequestID != testRequestID || testRequestTag.TagID != testTag.ID {
+		t.Errorf("The testRequestTag has incorrect values.")
+	}
+}
