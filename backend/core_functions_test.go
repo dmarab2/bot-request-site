@@ -60,6 +60,7 @@ func TestCreateRequestClaimCore(t *testing.T) {
 	}
 }
 
+// TestLinkTagToRequestCore ensures that the exported tag link has the ID from the tag and the request that it is linking.
 func TestLinkTagToRequestCore(t *testing.T) {
 	testContext := t.Context()
 	testRequestID := int64(15)
