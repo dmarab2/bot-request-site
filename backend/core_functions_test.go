@@ -86,3 +86,28 @@ func TestLinkTagToRequestCore(t *testing.T) {
 		t.Errorf("The testRequestTag has incorrect values.")
 	}
 }
+
+func TestChangeRequestStatusCore(t *testing.T) {
+	testContext := t.Context()
+	testStatusInput := ChangeStatusInput{
+		RequestID: int64(25),
+		NewStatus: "in_progress",
+	}
+	testUpdateFunction := func(c context.Context, d database.ChangeRequestStatusParams) (database.Request, error) {
+		testRequest := database.Request{
+			ID:          d.ID,
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			RequestText: "TEST REQUEST",
+			Status:      d.Status}
+		return testRequest, nil
+	}
+	testRequest, err := changeRequestStatusCore(testContext, testStatusInput, testUpdateFunction)
+	if err != nil {
+		t.Errorf("The test run of changeRequestStatusCore returned an error: %s", err.Error())
+	}
+	if testRequest.ID != testStatusInput.RequestID || testRequest.Status != database.RequestStatus(testStatusInput.NewStatus) {
+		t.Errorf("TestChangeRequestStatusCore failed to change request status to the test parameters.")
+	}
+
+}
