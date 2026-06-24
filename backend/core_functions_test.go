@@ -87,6 +87,7 @@ func TestLinkTagToRequestCore(t *testing.T) {
 	}
 }
 
+// TestChangeRequestStatusCore ensures that the request returned has the same ID and the status that is being targeted.
 func TestChangeRequestStatusCore(t *testing.T) {
 	testContext := t.Context()
 	testStatusInput := ChangeStatusInput{
