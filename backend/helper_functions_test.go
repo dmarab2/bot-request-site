@@ -4,7 +4,26 @@ import (
 	"encoding/json"
 	"net/http/httptest"
 	"testing"
+	"time"
+
+	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
+
+func TestTurnRequestToJson(t *testing.T) {
+	testRequest := database.Request{
+		ID:          int64(25),
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+		RequestText: "TestRequest",
+		Status:      "fulfilled",
+	}
+	testJsonRequest := turnRequestToJSON(testRequest)
+	if int(testRequest.ID) != testJsonRequest.ID ||
+		testRequest.RequestText != testJsonRequest.RequestText ||
+		string(testRequest.Status) != testJsonRequest.Status {
+		t.Errorf("testRequest did not equate to testJsonStatus. Values should be %d, %s, and %s, but are %d, %s, and %s", testRequest.ID, testRequest.RequestText, string(testRequest.Status), testJsonRequest.ID, testJsonRequest.RequestText, testJsonRequest.Status)
+	}
+}
 
 // TestRespondWithError ensures that respondWithError properly writes the error passed to it.
 func TestRespondWithError(t *testing.T) {
