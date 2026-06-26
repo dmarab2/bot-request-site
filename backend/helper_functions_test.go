@@ -25,6 +25,19 @@ func TestTurnRequestToJson(t *testing.T) {
 	}
 }
 
+func TestTurnClaimToJson(t *testing.T) {
+	testClaim := database.RequestClaim{
+		RequestID:       int64(25),
+		ClaimedAt:       time.Now(),
+		ClaimSecretHash: "secrethash",
+		ExpiresAt:       time.Now().AddDate(0, 0, 1),
+	}
+	testJsonClaim := turnClaimToJson(testClaim)
+	if int(testClaim.RequestID) != int(testJsonClaim.RequestID) {
+		t.Errorf("testClaim ID %d did not equal testJsonClaim ID %d", testClaim.RequestID, testJsonClaim.RequestID)
+	}
+}
+
 // TestRespondWithError ensures that respondWithError properly writes the error passed to it.
 func TestRespondWithError(t *testing.T) {
 	type jsonDecoder struct {
