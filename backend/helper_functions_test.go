@@ -9,6 +9,7 @@ import (
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
 
+// makes sure that turnRequestToJson accurately transfers request info over.
 func TestTurnRequestToJson(t *testing.T) {
 	testRequest := database.Request{
 		ID:          int64(25),
