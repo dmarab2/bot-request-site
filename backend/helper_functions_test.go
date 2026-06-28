@@ -26,6 +26,7 @@ func TestTurnRequestToJson(t *testing.T) {
 	}
 }
 
+// makes sure that turnClaimToJson accurately transfers claim info over.
 func TestTurnClaimToJson(t *testing.T) {
 	testClaim := database.RequestClaim{
 		RequestID:       int64(25),
