@@ -12,6 +12,7 @@ import (
 // makes sure that turnRequestToJson accurately transfers request info over.
 func TestTurnRequestToJson(t *testing.T) {
 	testRequest := database.Request{
+		// 25 is an arbitrary number
 		ID:          int64(25),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -29,6 +30,7 @@ func TestTurnRequestToJson(t *testing.T) {
 // makes sure that turnClaimToJson accurately transfers claim info over.
 func TestTurnClaimToJson(t *testing.T) {
 	testClaim := database.RequestClaim{
+		// 25 is an arbitrary number
 		RequestID:       int64(25),
 		ClaimedAt:       time.Now(),
 		ClaimSecretHash: "secrethash",
