@@ -42,6 +42,17 @@ func TestTurnClaimToJson(t *testing.T) {
 	}
 }
 
+func TestTurnLinkToJson(t *testing.T) {
+	testRequestLink := database.RequestTag{
+		RequestID: int64(30),
+		TagID:     int64(30),
+	}
+	testJsonLink := turnLinkToJson(testRequestLink)
+	if testRequestLink.RequestID != testJsonLink.RequestID || testRequestLink.TagID != testJsonLink.TagID {
+		t.Errorf("testRequestLink values were not transferred over to testJsonLink")
+	}
+}
+
 // TestRespondWithError ensures that respondWithError properly writes the error passed to it.
 func TestRespondWithError(t *testing.T) {
 	type jsonDecoder struct {
