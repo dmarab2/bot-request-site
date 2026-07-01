@@ -120,6 +120,15 @@ func TestValidateClaimPassword(t *testing.T) {
 	}
 }
 
+func TestCreateClaimParams(t *testing.T) {
+	testRequestID := int64(30)
+	testPasswordHash := "testHash"
+	testClaimParams := createClaimParams(testRequestID, testPasswordHash)
+	if testClaimParams.RequestID != testRequestID || testClaimParams.ClaimSecretHash != testPasswordHash {
+		t.Errorf("")
+	}
+}
+
 // TestValidateChangeRequestStatus ensures that new status changes are valid statuses.
 func TestValidateChangeRequestStatus(t *testing.T) {
 	testInput := ChangeStatusInput{20, "open"}
