@@ -129,6 +129,10 @@ func TestCreateClaimParams(t *testing.T) {
 	}
 }
 
+func TestMakeRequestParams(t *testing.T) {
+	testNewInput := ChangeStatusInput{RequestID: 30, NewStatus: "in_progress"}
+}
+
 // TestValidateChangeRequestStatus ensures that new status changes are valid statuses.
 func TestValidateChangeRequestStatus(t *testing.T) {
 	testInput := ChangeStatusInput{20, "open"}
