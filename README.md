@@ -3,7 +3,7 @@ This is a request site for chatbot creators and users to view and create request
 The site will make use of a booru style tagging system to make it easy to find requests that one is interested in.
 This application is made up of two distinct parts: a frontend written in React using Typescript, and a backend written written in Go.
 The backend is written mainly using the standard net/http library and is connected to a Postgres database via usage of sqlc. The goose package is also used for schema building.
-The frontend is written in Next.js using Typescript.
+The frontend is written in Vite using Typescript.
 
 
 TODO:

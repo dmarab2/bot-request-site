@@ -125,12 +125,16 @@ func TestCreateClaimParams(t *testing.T) {
 	testPasswordHash := "testHash"
 	testClaimParams := createClaimParams(testRequestID, testPasswordHash)
 	if testClaimParams.RequestID != testRequestID || testClaimParams.ClaimSecretHash != testPasswordHash {
-		t.Errorf("")
+		t.Errorf("Claim params do not match the Request ID and Password Hash.")
 	}
 }
 
 func TestMakeRequestParams(t *testing.T) {
 	testNewInput := ChangeStatusInput{RequestID: 30, NewStatus: "in_progress"}
+	testChangeParams := makeRequestParams(testNewInput)
+	if testNewInput.RequestID != testChangeParams.ID || testNewInput.NewStatus != string(testChangeParams.Status) {
+		t.Errorf("Input does not match the param changing object.")
+	}
 }
 
 // TestValidateChangeRequestStatus ensures that new status changes are valid statuses.
