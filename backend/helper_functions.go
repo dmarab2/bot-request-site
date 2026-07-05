@@ -30,11 +30,12 @@ func turnRequestToJSON(databaseRequest database.Request) jsonRequest {
 	return jsonRequest
 }
 
-func turnClaimToJson(databaseClaim database.RequestClaim) jsonClaim {
+func turnClaimToJson(databaseClaim database.RequestClaim, password *string) jsonClaim {
 	jsonClaim := jsonClaim{
 		RequestID: databaseClaim.RequestID,
 		ClaimedAt: databaseClaim.ClaimedAt,
 		ExpiresAt: databaseClaim.ExpiresAt,
+		Password:  password,
 	}
 	return jsonClaim
 }

@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+
 	"github.com/alexedwards/argon2id"
 )
 
@@ -19,4 +22,13 @@ func CheckPasswordHash(password, hash string) (bool, error) {
 	}
 	return doTheyMatch, nil
 
+}
+
+func GenerateClaimPassword() (string, error) {
+	// 256 bits of entropy is probably overkill but better safe than sorry
+	byteArray := make([]byte, 32)
+	if _, err := rand.Read(byteArray); err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(byteArray), nil
 }

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dmarab2/bot-request-site/backend/internal/auth"
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
 
@@ -36,7 +37,8 @@ func TestTurnClaimToJson(t *testing.T) {
 		ClaimSecretHash: "secrethash",
 		ExpiresAt:       time.Now().AddDate(0, 0, 1),
 	}
-	testJsonClaim := turnClaimToJson(testClaim)
+	testPassword := "testPassword"
+	testJsonClaim := turnClaimToJson(testClaim, &testPassword)
 	if int(testClaim.RequestID) != int(testJsonClaim.RequestID) {
 		t.Errorf("testClaim ID %d did not equal testJsonClaim ID %d", testClaim.RequestID, testJsonClaim.RequestID)
 	}
@@ -187,5 +189,24 @@ func TestNormalizeTagName(t *testing.T) {
 	returnedString = normalizeTagName(testString)
 	if returnedString != "test_space_underscore" {
 		t.Errorf("String 'Test Space Underscore' should have converted to 'test_space_underscore' and didn't")
+	}
+}
+
+func TestPasswordGenAndHashing(t *testing.T) {
+	testPassword, err := auth.GenerateClaimPassword()
+	if err != nil {
+		t.Errorf("Something went wrong when trying to gen a test claim password: %s", err.Error())
+	}
+	hashedTestPassword, err := auth.HashPassword(testPassword)
+	if err != nil {
+		t.Errorf("Something went wrong when trying to gen a test claim password: %s", err.Error())
+	}
+	doPasswordsMatch, err := auth.CheckPasswordHash(testPassword, hashedTestPassword)
+	if err != nil {
+		t.Errorf("Something went wrong when trying to gen a test claim password: %s", err.Error())
+	}
+	t.Logf("Password: %s, Hash: %s", testPassword, hashedTestPassword)
+	if !doPasswordsMatch {
+		t.Errorf("The password does not match the hash!")
 	}
 }

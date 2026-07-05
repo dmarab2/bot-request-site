@@ -138,12 +138,19 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		RequestID int64   `json:"request_id"`
 		Password  *string `json:"password"`
 	}
+	rawPassword, err := auth.GenerateClaimPassword()
+	if err != nil {
+		log.Printf("Error making a claim for this request: %s\n", err.Error())
+		respondWithError(w, 500, "Error making claim")
+		return
+	}
 	var params parameters
 	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
 		log.Printf("Error making a claim for this request: %s\n", err.Error())
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
+	params.Password = &rawPassword
 	newClaim := requestClaimInsert{requestID: params.RequestID, password: params.Password}
 	passwordHash, err := auth.HashPassword(*newClaim.password)
 	if err != nil {
@@ -157,7 +164,7 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 		respondWithError(w, 500, "Error making claim")
 		return
 	}
-	jsonClaim := turnClaimToJson(databaseClaim)
+	jsonClaim := turnClaimToJson(databaseClaim, &rawPassword)
 	respondWithJSON(w, 201, jsonClaim)
 }
 
