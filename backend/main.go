@@ -13,6 +13,7 @@ import (
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/rs/cors"
 )
 
 // createRequestWriter is a function that takes an HTTP POST request to the API from the frontend and
@@ -234,9 +235,10 @@ func main() {
 	dbQueries := database.New(db)
 	cfg := &apiConfig{dbQueries, os.Getenv("SECRET_KEY"), os.Getenv("PLATFORM")}
 	serveMux := http.NewServeMux()
+	corsHandler := cors.Default().Handler(serveMux)
 	server := &http.Server{
 		Addr:    ":8080",
-		Handler: serveMux,
+		Handler: corsHandler,
 	}
 	// root checks the availability of the server for now
 	serveMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
