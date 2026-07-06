@@ -100,8 +100,9 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 	metadataMiddleware(cfg, w, 201, jsonRequestSlice)
 }
 
-// getSingleRequest does just that, and is used mostly for viewing a request that is clicked on in the frontend.
-// note, this would also include viewing any tags that are attached to this request as well.
+// getSingleRequest does just that, and is used mostly for viewing a request
+// that is clicked on in the frontend.  note, this would also include viewing
+// any tags that are attached to this request as well.
 func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request) {
 	reqID := req.PathValue("requestID")
 	requestID, err := strconv.ParseInt(reqID, 10, 64)
@@ -115,8 +116,8 @@ func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request)
 	respondWithJSON(w, 500, jsonRequest)
 }
 
-// deleteRequests is a dev function to reset the database. DO NOT USE IN PROD. Tied to the
-// "POST /admin/reset" pattern.
+// deleteRequests is a dev function to reset the database. DO NOT USE IN PROD.
+// Tied to the "POST /admin/reset" pattern.
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	if cfg.platform != "dev" {
 		respondWithError(w, 404, "This is not the dev environment, you are not allowed to use this endpoint!")
@@ -131,8 +132,10 @@ func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(201)
 }
 
-// createRequestClaimWriter inserts a request claim into the database. The user submits a request ID and a password which
-// ties the claim to a preexisting request and gives it a hashed password which can be checked for later updates.
+// createRequestClaimWriter inserts a request claim into the database. The user
+// submits a request ID and a password which ties the claim to a preexisting
+// request and gives it a hashed password which can be checked for later
+// updates.
 func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		RequestID int64   `json:"request_id"`
@@ -168,8 +171,10 @@ func (cfg *apiConfig) createRequestClaimWriter(w http.ResponseWriter, req *http.
 	respondWithJSON(w, 201, jsonClaim)
 }
 
-// changeRequestStatus takes the ID of a request in the database in the API URL along with a JSON object containing the new status
-// to use, and changes the request fetched to the new status. This function is mapped to the "PUT /api/requests/{requestID}" URL.
+// changeRequestStatus takes the ID of a request in the database in the API URL
+// along with a JSON object containing the new status to use, and changes the
+// request fetched to the new status. This function is mapped to the "PUT
+// /api/requests/{requestID}" URL.
 func (cfg *apiConfig) changeRequestStatus(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
 		NewStatus       string `json:"new_status"`
