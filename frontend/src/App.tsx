@@ -1,7 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import './App.css'
 
+const MOCK_TAGS: string[] = [
+  "1girl", "1boy", "solo", "long_hair", "short_hair", "blonde_hair", 
+  "blue_eyes", "brown_eyes", "holding_hands", "smile", "blush", 
+  "background", "scenery", "highres", "masterpiece", "absurdres"
+];
+
 type requestStatus = "open" | "in_progress" | "fulfilled" | "cancelled" | ""
+type elementVisibility = "none" | "flex"
 
 interface Request {
     id: number;
@@ -24,6 +31,11 @@ interface RequestSetterProp {
     onRequestClick: (request: Request) => void
 }
 
+interface searchBoxProps {
+    suggestions: string[];
+    onChange?: (value: string) => void;
+}
+
 export default function App() {
     const [requestList, setRequestList] = useState<RequestJson>({data: [], pageNumber: 0, nextLimit: false, prevLimit: false})
     const [selectedRequest, setSelectedRequest] = useState<Request>({id: 0, createdAt: "", updatedAt: "", requestText: "", requestStatus: ""})
@@ -43,7 +55,6 @@ export default function App() {
                 <ViewBox selectedRequest={selectedRequest}  />
             </div>
             <aside>
-                <SearchBox />
             </aside>
         </div>
     );
@@ -69,8 +80,9 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
         </div>
     )
 }
-
+/*
 function SearchBox () {
+    const [suggestionVisibility, setSuggestionVisibility] = useState<elementVisibility>("none")
     function sayHello () {
         console.log("Hello!")
     }
@@ -78,7 +90,65 @@ function SearchBox () {
     return (
         <div>
             <label htmlFor="search">Search for Requests</label>
-            <input type="text" id="search" name="search" placeholder="Enter Request Tag" onKeyUp={debounceTest(sayHello, 1150)} />
+            <input type="text" id="search" name="search" placeholder="Enter Request Tag" onKeyUp={debounceTest(sayHello, 600)} />
+            <div style={{ display: suggestionVisibility }}>
+                <datalist>
+                </datalist>
+            </div>
+        </div>
+    )
+}
+*/
+
+function requestSearch({ suggestions, onChange }: searchBoxProps) {
+    const [value, setValue] = useState<string>("");
+    const [activeIndex, setActiveIndex] = useState<number>(0);
+    const [showDropdown, setShowDropdown] = useState<boolean>(false);
+    const inputReference = useRef<HTMLInputElement>(null);
+
+    const currentWord = useMemo(() => {
+        const cursor = inputReference.current?.selectionStart ?? value.length;
+        const fromCursor = value.slice(0, cursor);
+        const lastWord = fromCursor.match(/\S+$/);
+        return lastWord ? lastWord[0] : "";
+
+    },[value])
+
+    function handleKeyDown() {
+        ;
+    }
+    function applySuggestion(tag: string) {
+        ;
+    }
+
+    return (
+        <div>
+            <input
+            ref={inputReference}
+            value={value}
+            onChange={(e) => {
+                setValue(e.target.value);
+                onChange?.(e.target.value);
+                setShowDropdown(true)
+                setActiveIndex(0);
+            }}
+            onBlur={() => {setTimeout(() => setShowDropdown(false)), 100}}
+            onFocus={() => setShowDropdown(true)}
+            onKeyDown={handleKeyDown}
+            placeholder="Enter tags here."
+            />
+            {showDropdown && suggestions.length > 0 && (
+                <ul>
+                    {suggestions.map((tag: string, index: number) => (
+                        <li
+                        key={tag}
+                        onMouseDown={() => applySuggestion(tag)}
+                        >
+                            {tag}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }
