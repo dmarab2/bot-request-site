@@ -116,6 +116,10 @@ func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request)
 	respondWithJSON(w, 500, jsonRequest)
 }
 
+func (cfg *apiConfig) getSingleTag(w http.ResponseWriter, req *http.Request) {
+
+}
+
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD.
 // Tied to the "POST /admin/reset" pattern.
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
