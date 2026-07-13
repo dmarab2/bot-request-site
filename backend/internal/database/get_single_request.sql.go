@@ -10,7 +10,7 @@ import (
 )
 
 const getSingleRequest = `-- name: GetSingleRequest :one
-SELECT id, created_at, updated_at, request_text, status FROM requests
+SELECT id, created_at, updated_at, request_text, status, request_search_vector FROM requests
 WHERE id = $1
 `
 
@@ -23,6 +23,7 @@ func (q *Queries) GetSingleRequest(ctx context.Context, id int64) (Request, erro
 		&i.UpdatedAt,
 		&i.RequestText,
 		&i.Status,
+		&i.RequestSearchVector,
 	)
 	return i, err
 }

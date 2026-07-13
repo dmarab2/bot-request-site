@@ -11,7 +11,6 @@ import (
 )
 
 const getTagLinksForRequest = `-- name: GetTagLinksForRequest :many
-
 SELECT id, name, post_count, created_at, updated_at, request_id, tag_id
 FROM tags
 JOIN request_tags ON tags.id = request_tags.tag_id

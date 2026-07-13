@@ -113,11 +113,19 @@ func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request)
 		return
 	}
 	jsonRequest := turnRequestToJSON(retrievedRequest)
-	respondWithJSON(w, 500, jsonRequest)
+	respondWithJSON(w, 200, jsonRequest)
 }
 
-func (cfg *apiConfig) getSingleTag(w http.ResponseWriter, req *http.Request) {
-
+func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Request) {
+	reqTag := req.PathValue("requested_tag")
+	reqTagNullstring := sql.NullString{String: reqTag, Valid: true}
+	tagList, err := getAutocompleteTagCore(req.Context(), reqTagNullstring, cfg.db.GetTagAutocompleteList)
+	if err != nil {
+		log.Printf("Error finding matching tags: %s\n", err.Error())
+		respondWithError(w, 500, "Error finding tags")
+		return
+	}
+	respondWithJSON(w, 200, tagList)
 }
 
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD.
@@ -269,6 +277,7 @@ func main() {
 	serveMux.HandleFunc("PUT /api/requests/{requestID}", cfg.changeRequestStatus)
 	serveMux.HandleFunc("POST /api/request_tag_links", cfg.linkTagToRequest)
 	serveMux.HandleFunc("GET /api/requests/{requestID}", cfg.getSingleRequest)
+	serveMux.HandleFunc("GET /api/tags/{requested_tag}", cfg.getAutocompleteTagList)
 	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Printf("There was an error: %s\n", err.Error())

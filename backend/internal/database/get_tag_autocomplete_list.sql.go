@@ -11,34 +11,40 @@ import (
 )
 
 const getTagAutocompleteList = `-- name: GetTagAutocompleteList :many
-SELECT name
+SELECT id, name, post_count, created_at, updated_at
 FROM tags
 WHERE name LIKE $1 || '%'
 
 UNION
 
-SELECT name
+SELECT id, name, post_count, created_at, updated_at
 FROM tags
 WHERE name % $1
 
 
 ORDER BY post_count DESC
-LIMIT 5
+LIMIT 10
 `
 
-func (q *Queries) GetTagAutocompleteList(ctx context.Context, dollar_1 sql.NullString) ([]string, error) {
+func (q *Queries) GetTagAutocompleteList(ctx context.Context, dollar_1 sql.NullString) ([]Tag, error) {
 	rows, err := q.db.QueryContext(ctx, getTagAutocompleteList, dollar_1)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []string
+	var items []Tag
 	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
+		var i Tag
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.PostCount,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
 			return nil, err
 		}
-		items = append(items, name)
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

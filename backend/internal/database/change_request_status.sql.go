@@ -13,7 +13,7 @@ const changeRequestStatus = `-- name: ChangeRequestStatus :one
 UPDATE requests
 SET status = $1
 WHERE id = $2
-RETURNING id, created_at, updated_at, request_text, status
+RETURNING id, created_at, updated_at, request_text, status, request_search_vector
 `
 
 type ChangeRequestStatusParams struct {
@@ -30,6 +30,7 @@ func (q *Queries) ChangeRequestStatus(ctx context.Context, arg ChangeRequestStat
 		&i.UpdatedAt,
 		&i.RequestText,
 		&i.Status,
+		&i.RequestSearchVector,
 	)
 	return i, err
 }

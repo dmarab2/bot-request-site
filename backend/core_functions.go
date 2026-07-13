@@ -6,6 +6,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
@@ -63,4 +64,12 @@ func getSingleRequestCore(
 	getFunction func(context.Context, int64) (database.Request, error),
 ) (database.Request, error) {
 	return getFunction(context, requestID)
+}
+
+func getAutocompleteTagCore(
+	context context.Context,
+	requestedTag sql.NullString,
+	getFunction func(context.Context, sql.NullString) ([]database.Tag, error),
+) ([]database.Tag, error) {
+	return getFunction(context, requestedTag)
 }

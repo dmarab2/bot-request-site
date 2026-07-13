@@ -8,6 +8,15 @@ const MOCK_TAGS: string[] = [
 ];
 
 
+interface Tag {
+    CreatedAt: string,
+    ID: number,
+    Name: string,
+    PostCount: number,
+    UpdatedAt: string,
+}
+
+
 export function useDebouncedSuggestions(currentWord: string, delay: number = 400) {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -17,6 +26,20 @@ export function useDebouncedSuggestions(currentWord: string, delay: number = 400
         return MOCK_TAGS
             .filter((t) => t.toLowerCase().startsWith(lower))
             .slice(0, 10); // using 10 here since 10 suggestions is a standard on sites with tags
+    }
+
+    async function returnTagSuggestions(): Promise<string[]> {
+        const response = await fetch(`http://localhost:8080/api/tags/${currentWord}`)
+        if (!response.ok) {
+            throw new Error(`There was an HTTP Error, Status: ${response.status}`);
+        }
+        const data: Tag[] = await response.json()
+        console.log(data);
+        let tagNames: string[] = [];
+        data.forEach(element => {
+           tagNames.push(element.Name) 
+        });
+        return tagNames;
     }
 
     // a mutable reference to track the active debounce controller instance
@@ -33,13 +56,13 @@ export function useDebouncedSuggestions(currentWord: string, delay: number = 400
 
         setLoading(true);
 
-        const debouncedFetch = returnDebounceTest(returnMockTags, 400)
+        const debouncedFetch = returnDebounceTest(returnTagSuggestions, 250)
 
-        debounceRef.current = debouncedFetch;
+        //debounceRef.current = debouncedFetch;
 
         debouncedFetch()
-            .then((remoteData) => {
-                setSuggestions(remoteData);
+            .then((tagList) => {
+                setSuggestions(tagList);
             })
             .catch((err) => {
                 console.error("Error on the backend:", err);

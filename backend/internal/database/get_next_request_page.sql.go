@@ -10,7 +10,7 @@ import (
 )
 
 const getNextRequestPage = `-- name: GetNextRequestPage :many
-SELECT id, created_at, updated_at, request_text, status FROM requests
+SELECT id, created_at, updated_at, request_text, status, request_search_vector FROM requests
 WHERE status = $1
 AND id <= $2
 ORDER BY created_at DESC
@@ -37,6 +37,7 @@ func (q *Queries) GetNextRequestPage(ctx context.Context, arg GetNextRequestPage
 			&i.UpdatedAt,
 			&i.RequestText,
 			&i.Status,
+			&i.RequestSearchVector,
 		); err != nil {
 			return nil, err
 		}

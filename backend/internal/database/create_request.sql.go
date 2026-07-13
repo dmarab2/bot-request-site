@@ -12,7 +12,7 @@ import (
 const createRequest = `-- name: CreateRequest :one
 INSERT INTO requests(created_at, updated_at, request_text)
 VALUES(NOW(), NOW(), $1)
-RETURNING id, created_at, updated_at, request_text, status
+RETURNING id, created_at, updated_at, request_text, status, request_search_vector
 `
 
 func (q *Queries) CreateRequest(ctx context.Context, requestText string) (Request, error) {
@@ -24,6 +24,7 @@ func (q *Queries) CreateRequest(ctx context.Context, requestText string) (Reques
 		&i.UpdatedAt,
 		&i.RequestText,
 		&i.Status,
+		&i.RequestSearchVector,
 	)
 	return i, err
 }

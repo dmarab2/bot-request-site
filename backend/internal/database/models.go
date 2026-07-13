@@ -55,11 +55,12 @@ func (ns NullRequestStatus) Value() (driver.Value, error) {
 }
 
 type Request struct {
-	ID          int64
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	RequestText string
-	Status      RequestStatus
+	ID                  int64
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	RequestText         string
+	Status              RequestStatus
+	RequestSearchVector interface{}
 }
 
 type RequestClaim struct {

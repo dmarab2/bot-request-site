@@ -10,7 +10,7 @@ import (
 )
 
 const getAllRequests = `-- name: GetAllRequests :many
-SELECT id, created_at, updated_at, request_text, status FROM requests
+SELECT id, created_at, updated_at, request_text, status, request_search_vector FROM requests
 `
 
 func (q *Queries) GetAllRequests(ctx context.Context) ([]Request, error) {
@@ -28,6 +28,7 @@ func (q *Queries) GetAllRequests(ctx context.Context) ([]Request, error) {
 			&i.UpdatedAt,
 			&i.RequestText,
 			&i.Status,
+			&i.RequestSearchVector,
 		); err != nil {
 			return nil, err
 		}
