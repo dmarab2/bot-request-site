@@ -3,15 +3,20 @@ export type DebouncedFunction<T> = {
     cancel: () => void;
 }
 
-export function returnDebounceTest<T>(callback: () => T | Promise<T>, delay: number): DebouncedFunction<T> {
+export function returnDebounceTest<T>(callback: (controller: AbortController) => T | Promise<T>, delay: number): DebouncedFunction<T> {
     let timeoutID: ReturnType<typeof setTimeout> | undefined;
+    let currentController: AbortController | undefined;
 
     const debouncedFn = function () {
         return new Promise<T>((resolve, reject) => {
             if (timeoutID) clearTimeout(timeoutID);
+            if (currentController) currentController.abort();
+
+            currentController = new AbortController();
+
             timeoutID = setTimeout(async () => {
                 try{
-                    const result = await callback();
+                    const result = await callback(currentController!);
                     resolve(result)
                 } catch(error) {
                     reject(error);
@@ -22,6 +27,7 @@ export function returnDebounceTest<T>(callback: () => T | Promise<T>, delay: num
     };
     debouncedFn.cancel = () => {
         if (timeoutID) clearTimeout(timeoutID);
+        if (currentController) currentController.abort();
     };
     return debouncedFn;
 }

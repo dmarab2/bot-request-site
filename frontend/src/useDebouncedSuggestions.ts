@@ -28,8 +28,8 @@ export function useDebouncedSuggestions(currentWord: string, delay: number = 400
             .slice(0, 10); // using 10 here since 10 suggestions is a standard on sites with tags
     }
 
-    async function returnTagSuggestions(): Promise<string[]> {
-        const response = await fetch(`http://localhost:8080/api/tags/${currentWord}`)
+    async function returnTagSuggestions(controller: AbortController): Promise<string[]> {
+        const response = await fetch(`http://localhost:8080/api/tags/${currentWord}`, {signal: controller.signal})
         if (!response.ok) {
             throw new Error(`There was an HTTP Error, Status: ${response.status}`);
         }
@@ -63,13 +63,20 @@ export function useDebouncedSuggestions(currentWord: string, delay: number = 400
         debouncedFetch()
             .then((tagList) => {
                 setSuggestions(tagList);
+                setLoading(false);
             })
             .catch((err) => {
+                if(err instanceof DOMException && err.name=="AbortError"){
+                    console.log(`Network request for ${currentWord} was successfully aborted.`);
+                    return;
+                }
                 console.error("Error on the backend:", err);
-            })
+            });
+            /*
             .finally(() => {
                 setLoading(false);
             });
+            */
 
         // cancels the timer automatically on the next keystroke or component unmount
         return () => {
