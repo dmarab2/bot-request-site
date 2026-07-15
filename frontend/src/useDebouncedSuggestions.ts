@@ -1,12 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { returnDebounceTest, type DebouncedFunction } from './debounceUtil';
 
-const MOCK_TAGS: string[] = [
-    "1girl", "1boy", "solo", "long_hair", "short_hair", "blonde_hair",
-    "blue_eyes", "brown_eyes", "holding_hands", "smile", "blush",
-    "background", "scenery", "highres", "masterpiece", "absurdres"
-];
-
 
 interface Tag {
     CreatedAt: string,
@@ -20,13 +14,6 @@ interface Tag {
 export function useDebouncedSuggestions(currentWord: string, delay: number = 400) {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-
-    function returnMockTags(): string[] {
-        const lower = currentWord.toLowerCase();
-        return MOCK_TAGS
-            .filter((t) => t.toLowerCase().startsWith(lower))
-            .slice(0, 10); // using 10 here since 10 suggestions is a standard on sites with tags
-    }
 
     async function returnTagSuggestions(controller: AbortController): Promise<string[]> {
         const response = await fetch(`http://localhost:8080/api/tags/${currentWord}`, {signal: controller.signal})
