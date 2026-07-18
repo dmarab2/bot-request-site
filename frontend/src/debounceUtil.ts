@@ -3,6 +3,7 @@ export type DebouncedFunction<T> = {
     cancel: () => void;
 }
 
+// general debounce function to use for various parts of the application
 export function returnDebounceTest<T>(callback: (controller: AbortController) => T | Promise<T>, delay: number): DebouncedFunction<T> {
     let timeoutID: ReturnType<typeof setTimeout> | undefined;
     let currentController: AbortController | undefined;
