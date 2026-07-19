@@ -54,6 +54,48 @@ func (ns NullRequestStatus) Value() (driver.Value, error) {
 	return string(ns.RequestStatus), nil
 }
 
+type SandboxStatus string
+
+const (
+	SandboxStatusPending  SandboxStatus = "pending"
+	SandboxStatusApproved SandboxStatus = "approved"
+)
+
+func (e *SandboxStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = SandboxStatus(s)
+	case string:
+		*e = SandboxStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for SandboxStatus: %T", src)
+	}
+	return nil
+}
+
+type NullSandboxStatus struct {
+	SandboxStatus SandboxStatus
+	Valid         bool // Valid is true if SandboxStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSandboxStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.SandboxStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.SandboxStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSandboxStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.SandboxStatus), nil
+}
+
 type Request struct {
 	ID                  int64
 	CreatedAt           time.Time
@@ -84,8 +126,9 @@ type Tag struct {
 }
 
 type TagAlias struct {
-	ID        int64
-	Name      string
-	TagID     int64
-	CreatedAt time.Time
+	ID          int64
+	Name        string
+	TagID       int64
+	CreatedAt   time.Time
+	AliasStatus SandboxStatus
 }
