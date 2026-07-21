@@ -116,6 +116,8 @@ func (cfg *apiConfig) getSingleRequest(w http.ResponseWriter, req *http.Request)
 	respondWithJSON(w, 200, jsonRequest)
 }
 
+// getAutocompleteTagList fetches the 10 most relevant tags for the tag search on the frontend and displays them as a suggested
+// autocomplete list. this is used with the "GET /api/tags/{requested_tag}" pattern
 func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Request) {
 	reqTag := req.PathValue("requested_tag")
 	reqTagNullstring := sql.NullString{String: reqTag, Valid: true}
