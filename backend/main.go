@@ -130,6 +130,10 @@ func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Re
 	respondWithJSON(w, 200, tagList)
 }
 
+func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
+
+}
+
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD.
 // Tied to the "POST /admin/reset" pattern.
 func (cfg *apiConfig) deleteRequests(w http.ResponseWriter, req *http.Request) {
