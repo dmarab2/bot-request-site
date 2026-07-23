@@ -131,7 +131,10 @@ func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Re
 }
 
 func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
-
+	type parameters struct {
+		Status database.RequestStatus
+		ID     int64
+	}
 }
 
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD.
