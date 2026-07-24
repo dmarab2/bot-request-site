@@ -54,7 +54,8 @@ export default function App() {
             <div>
                 <ul><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
                 <ViewBox selectedRequest={selectedRequest}  />
-                <RequestSearch suggestedTags={MOCK_TAGS_HERE} />
+                <RequestTextSearch />
+                <RequestTagSearch suggestedTags={MOCK_TAGS_HERE} />
             </div>
             <aside>
             </aside>
@@ -83,7 +84,23 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
     )
 }
 
-function RequestSearch({ suggestedTags, onParentChange }: searchBoxProps) {
+function RequestTextSearch() {
+    const [value, setValue] = useState<string>("");
+    const inputReference = useRef<HTMLInputElement>(null);
+
+    return (
+        <div className="relative w-full">
+            <input
+            ref={inputReference}
+            value={value}
+            placeholder='Enter request text here.'
+            ></input>
+        </div>
+    )
+}
+
+
+function RequestTagSearch({ suggestedTags, onParentChange }: searchBoxProps) {
     const [value, setValue] = useState<string>("");
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
