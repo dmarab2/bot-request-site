@@ -12,13 +12,13 @@ import (
 const getRequestsFromText = `-- name: GetRequestsFromText :many
 SELECT id, created_at, updated_at, request_text, status, request_search_vector
 FROM requests
-WHERE request_search_vector @@ websearch_to_query('english', $1)
+WHERE request_search_vector @@ websearch_to_tsquery('english', $1)
 ORDER BY ts_rank(request_search_vector, websearch_to_tsquery('english', $1)) DESC
 LIMIT 10
 `
 
-func (q *Queries) GetRequestsFromText(ctx context.Context, websearchToQuery interface{}) ([]Request, error) {
-	rows, err := q.db.QueryContext(ctx, getRequestsFromText, websearchToQuery)
+func (q *Queries) GetRequestsFromText(ctx context.Context, websearchToTsquery string) ([]Request, error) {
+	rows, err := q.db.QueryContext(ctx, getRequestsFromText, websearchToTsquery)
 	if err != nil {
 		return nil, err
 	}
