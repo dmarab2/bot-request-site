@@ -1,7 +1,7 @@
 -- name: GetRequestsFromTags :many
 SELECT *
 FROM requests
-WHERE $1 <@ (
+WHERE $1::text[] <@ (
     SELECT coalesce(array_agg(tags.name), '{}')
     FROM request_tags
     LEFT JOIN tags ON tags.id = request_tags.tag_id

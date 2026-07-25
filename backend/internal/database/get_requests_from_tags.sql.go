@@ -7,12 +7,14 @@ package database
 
 import (
 	"context"
+
+	"github.com/lib/pq"
 )
 
 const getRequestsFromTags = `-- name: GetRequestsFromTags :many
 SELECT id, created_at, updated_at, request_text, status, request_search_vector
 FROM requests
-WHERE $1 <@ (
+WHERE $1::text[] <@ (
     SELECT coalesce(array_agg(tags.name), '{}')
     FROM request_tags
     LEFT JOIN tags ON tags.id = request_tags.tag_id
@@ -21,8 +23,8 @@ WHERE $1 <@ (
 LIMIT 10
 `
 
-func (q *Queries) GetRequestsFromTags(ctx context.Context, name string) ([]Request, error) {
-	rows, err := q.db.QueryContext(ctx, getRequestsFromTags, name)
+func (q *Queries) GetRequestsFromTags(ctx context.Context, dollar_1 []string) ([]Request, error) {
+	rows, err := q.db.QueryContext(ctx, getRequestsFromTags, pq.Array(dollar_1))
 	if err != nil {
 		return nil, err
 	}
