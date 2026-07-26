@@ -73,3 +73,11 @@ func getAutocompleteTagCore(
 ) ([]database.Tag, error) {
 	return getFunction(context, requestedTag)
 }
+
+func searchRequestsCore(
+	context context.Context,
+	searchInfo requestSearchInput,
+	getFunction func(context.Context, string) ([]database.Request, error),
+) ([]database.Request, error) {
+	return getFunction(context, *searchInfo.textSearch)
+}

@@ -206,3 +206,6 @@ func makeTagLinkInput(requestID int64, relevantTag database.Tag) linkTagInput {
 	}
 	return tagToLink
 }
+
+//func chooseAndExecuteRequestSearch(searchParams requestSearchInput) []database.Request {
+//}

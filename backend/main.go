@@ -132,8 +132,13 @@ func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Re
 
 func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
 	type parameters struct {
-		Status database.RequestStatus
-		ID     int64
+		textSearch *string `json:"text_search"`
+		tagSearch  *string `json:"tag_search"`
+	}
+	var params parameters
+	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
+		log.Printf("Error with search: %s\n", err.Error())
+		respondWithError(w, 500, "Error making a search")
 	}
 }
 
@@ -257,6 +262,8 @@ func (cfg *apiConfig) linkTagToRequest(w http.ResponseWriter, req *http.Request)
 	jsonLink := turnLinkToJson(requestTag)
 	respondWithJSON(w, 201, jsonLink)
 }
+
+// func (cfg *apiConfig) exportTagSearch
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
 // and starts the server. Right now the server runs on port :8080. This will later run on port :80.

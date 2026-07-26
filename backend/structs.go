@@ -49,3 +49,8 @@ type linkTagInput struct {
 	tagID     int64
 	tagName   string
 }
+
+type requestSearchInput struct {
+	textSearch *string
+	tagSearch  []string
+}
