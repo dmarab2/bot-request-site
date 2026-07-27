@@ -207,5 +207,24 @@ func makeTagLinkInput(requestID int64, relevantTag database.Tag) linkTagInput {
 	return tagToLink
 }
 
-//func chooseAndExecuteRequestSearch(searchParams requestSearchInput) []database.Request {
-//}
+func makeSearchRequestInput(parameters searchParameters) requestSearchInput {
+	inputSearch := requestSearchInput{tagBool: false, textBool: false}
+	if (parameters.tagSearch == nil || *parameters.tagSearch == "") && !(parameters.textSearch == nil || *parameters.textSearch == "") {
+		inputSearch.textSearch = parameters.textSearch
+		inputSearch.textBool = true
+		return inputSearch
+	}
+	if !(parameters.tagSearch == nil || *parameters.tagSearch == "") && (parameters.textSearch == nil || *parameters.textSearch == "") {
+		inputSearch.tagSearch = strings.Split(*parameters.tagSearch, " ")
+		inputSearch.tagBool = true
+		return inputSearch
+	}
+	if !(parameters.tagSearch == nil || *parameters.tagSearch == "") && !(parameters.textSearch == nil || *parameters.textSearch == "") {
+		inputSearch.tagSearch = strings.Split(*parameters.tagSearch, " ")
+		inputSearch.textSearch = parameters.textSearch
+		inputSearch.textBool = true
+		inputSearch.tagBool = true
+		return inputSearch
+	}
+	return inputSearch
+}

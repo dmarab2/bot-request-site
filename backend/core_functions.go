@@ -77,7 +77,8 @@ func getAutocompleteTagCore(
 func searchRequestsCore(
 	context context.Context,
 	searchInfo requestSearchInput,
-	getFunction func(context.Context, string) ([]database.Request, error),
+	searchByText func(context.Context, string) ([]database.Request, error),
+	searchByTags func(context.Context, []string) ([]database.Request, error),
 ) ([]database.Request, error) {
-	return getFunction(context, *searchInfo.textSearch)
+	return searchByText(context, *searchInfo.textSearch)
 }

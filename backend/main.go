@@ -131,11 +131,7 @@ func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Re
 }
 
 func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
-	type parameters struct {
-		textSearch *string `json:"text_search"`
-		tagSearch  *string `json:"tag_search"`
-	}
-	var params parameters
+	var params searchParameters
 	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
 		log.Printf("Error with search: %s\n", err.Error())
 		respondWithError(w, 500, "Error making a search")

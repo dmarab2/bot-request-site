@@ -50,7 +50,14 @@ type linkTagInput struct {
 	tagName   string
 }
 
+type searchParameters struct {
+	textSearch *string `json:"text_search"`
+	tagSearch  *string `json:"tag_search"`
+}
+
 type requestSearchInput struct {
 	textSearch *string
 	tagSearch  []string
+	textBool   bool
+	tagBool    bool
 }
