@@ -7,6 +7,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/dmarab2/bot-request-site/backend/internal/database"
 )
@@ -79,6 +80,16 @@ func searchRequestsCore(
 	searchInfo requestSearchInput,
 	searchByText func(context.Context, string) ([]database.Request, error),
 	searchByTags func(context.Context, []string) ([]database.Request, error),
+	searchByBoth func(context.Context, database.GetRequestsFromTagsAndTextParams) ([]database.Request, error),
 ) ([]database.Request, error) {
-	return searchByText(context, *searchInfo.textSearch)
+	if searchInfo.tagBool && !searchInfo.textBool {
+		return searchByTags(context, searchInfo.tagSearch)
+	}
+	if !searchInfo.tagBool && searchInfo.textBool {
+		return searchByText(context, *searchInfo.textSearch)
+	}
+	if searchInfo.tagBool && searchInfo.textBool {
+		return searchByBoth(context, database.GetRequestsFromTagsAndTextParams{searchInfo.tagSearch, *searchInfo.textSearch})
+	}
+	return []database.Request{}, errors.New("Invalid search parameters.")
 }

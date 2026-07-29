@@ -136,6 +136,19 @@ func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
 		log.Printf("Error with search: %s\n", err.Error())
 		respondWithError(w, 500, "Error making a search")
 	}
+	requestInput := makeSearchRequestInput(params)
+	databaseRequestSlice, err := searchRequestsCore(
+		req.Context(),
+		requestInput,
+		cfg.db.GetRequestsFromText,
+		cfg.db.GetRequestsFromTags,
+		cfg.db.GetRequestsFromTagsAndText)
+	if err != nil {
+		log.Printf("Error searching for requests:", err.Error())
+		respondWithError(w, 500, "Error searching for requests")
+		return
+	}
+	respondWithJSON(w, 200, databaseRequestSlice)
 }
 
 // deleteRequests is a dev function to reset the database. DO NOT USE IN PROD.
