@@ -112,3 +112,7 @@ func TestChangeRequestStatusCore(t *testing.T) {
 	}
 
 }
+
+func TestSearchResultsCore(t *testing.T) {
+
+}

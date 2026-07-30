@@ -91,5 +91,5 @@ func searchRequestsCore(
 	if searchInfo.tagBool && searchInfo.textBool {
 		return searchByBoth(context, database.GetRequestsFromTagsAndTextParams{searchInfo.tagSearch, *searchInfo.textSearch})
 	}
-	return []database.Request{}, errors.New("Invalid search parameters.")
+	return nil, errors.New("Invalid search parameters.")
 }
