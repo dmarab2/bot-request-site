@@ -130,6 +130,7 @@ func (cfg *apiConfig) getAutocompleteTagList(w http.ResponseWriter, req *http.Re
 	respondWithJSON(w, 200, tagList)
 }
 
+// searchRequests does so with either request body text, tags, or both, and returns the first ten requests it finds.
 func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
 	var params searchParameters
 	if err := json.NewDecoder(req.Body).Decode(&params); err != nil {
