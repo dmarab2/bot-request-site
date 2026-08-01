@@ -294,6 +294,7 @@ func main() {
 	serveMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, you've requested %s\n", r.URL.Path)
 	})
+	// NOTE: will have to look at how to configure the API for getting and searching requests.
 	fileServer := http.FileServer(http.Dir("./static"))
 	serveMux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 	serveMux.HandleFunc("DELETE /admin/reset", cfg.deleteRequests)
