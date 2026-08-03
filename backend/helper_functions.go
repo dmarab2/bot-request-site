@@ -207,6 +207,8 @@ func makeTagLinkInput(requestID int64, relevantTag database.Tag) linkTagInput {
 	return tagToLink
 }
 
+// this sets the resulting requestSearchInput based on the parameters given, making it easier for the eventual
+// run of searching the requests easier.
 func makeSearchRequestInput(parameters searchParameters) requestSearchInput {
 	inputSearch := requestSearchInput{tagBool: false, textBool: false}
 	if (parameters.tagSearch == nil || *parameters.tagSearch == "") && !(parameters.textSearch == nil || *parameters.textSearch == "") {
