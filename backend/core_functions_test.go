@@ -115,5 +115,13 @@ func TestChangeRequestStatusCore(t *testing.T) {
 
 func TestSearchResultsCore(t *testing.T) {
 	testContext := t.Context()
-	testRequestSearchInput := requestSearchInput{}
+	testString := "testString"
+	testStringArray := []string{"testStringArray"}
+	testRequestSearchInput := requestSearchInput{
+		textSearch: &testString,
+		tagSearch:  testStringArray,
+		textBool:   false,
+		tagBool:    false,
+	}
+
 }
