@@ -123,5 +123,38 @@ func TestSearchResultsCore(t *testing.T) {
 		textBool:   false,
 		tagBool:    false,
 	}
+	searchByText := func(testContext context.Context, testString string) ([]database.Request, error) {
+		testRequest := database.Request{
+			ID:          1,
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			RequestText: "text",
+			Status:      "open"}
+		testRequestSlice := []database.Request{testRequest}
+		return testRequestSlice, nil
+	}
+	searchByTags := func(context.Context, []string) ([]database.Request, error) {
+		testRequest := database.Request{
+			ID:          1,
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			RequestText: "tag",
+			Status:      "open"}
+		testRequestSlice := []database.Request{testRequest}
+		return testRequestSlice, nil
+	}
+	searchByBoth := func(context.Context, database.GetRequestsFromTagsAndTextParams) ([]database.Request, error) {
+		testRequest := database.Request{
+			ID:          1,
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			RequestText: "both",
+			Status:      "open"}
+		testRequestSlice := []database.Request{testRequest}
+		return testRequestSlice, nil
+	}
+	testRequestSearchInput.textBool = true
+	resultSlice, err := searchRequestsCore(testContext, testRequestSearchInput, searchByText, searchByTags, searchByBoth)
+	//if resultSlice[0].RequestText
 
 }
