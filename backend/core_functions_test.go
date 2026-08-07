@@ -154,7 +154,20 @@ func TestSearchResultsCore(t *testing.T) {
 		return testRequestSlice, nil
 	}
 	testRequestSearchInput.textBool = true
-	resultSlice, err := searchRequestsCore(testContext, testRequestSearchInput, searchByText, searchByTags, searchByBoth)
-	//if resultSlice[0].RequestText
+	resultSlice, _ := searchRequestsCore(testContext, testRequestSearchInput, searchByText, searchByTags, searchByBoth)
+	if resultSlice[0].RequestText != "text" {
+		t.Errorf("Request text is %s instead of being \"text\"", resultSlice[0].RequestText)
+	}
+	testRequestSearchInput.textBool = false
+	testRequestSearchInput.tagBool = true
+	resultSlice, _ = searchRequestsCore(testContext, testRequestSearchInput, searchByText, searchByTags, searchByBoth)
+	if resultSlice[0].RequestText != "tag" {
+		t.Errorf("Request text is %s instead of being \"tag\"", resultSlice[0].RequestText)
+	}
+	testRequestSearchInput.textBool = true
+	resultSlice, _ = searchRequestsCore(testContext, testRequestSearchInput, searchByText, searchByTags, searchByBoth)
+	if resultSlice[0].RequestText != "both" {
+		t.Errorf("Request text is %s instead of being \"both\"", resultSlice[0].RequestText)
+	}
 
 }
