@@ -169,5 +169,4 @@ func TestSearchResultsCore(t *testing.T) {
 	if resultSlice[0].RequestText != "both" {
 		t.Errorf("Request text is %s instead of being \"both\"", resultSlice[0].RequestText)
 	}
-
 }

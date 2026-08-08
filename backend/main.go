@@ -145,7 +145,7 @@ func (cfg *apiConfig) searchRequests(w http.ResponseWriter, req *http.Request) {
 		cfg.db.GetRequestsFromTags,
 		cfg.db.GetRequestsFromTagsAndText)
 	if err != nil {
-		log.Printf("Error searching for requests:", err.Error())
+		log.Printf("Error searching for requests: %s\n", err.Error())
 		respondWithError(w, 500, "Error searching for requests")
 		return
 	}
