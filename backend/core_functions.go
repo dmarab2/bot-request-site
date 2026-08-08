@@ -89,7 +89,7 @@ func searchRequestsCore(
 		return searchByText(context, *searchInfo.textSearch)
 	}
 	if searchInfo.tagBool && searchInfo.textBool {
-		return searchByBoth(context, database.GetRequestsFromTagsAndTextParams{searchInfo.tagSearch, *searchInfo.textSearch})
+		return searchByBoth(context, database.GetRequestsFromTagsAndTextParams{Column1: searchInfo.tagSearch, WebsearchToTsquery: *searchInfo.textSearch})
 	}
 	return nil, errors.New("Invalid search parameters.")
 }

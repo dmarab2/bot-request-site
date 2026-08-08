@@ -211,19 +211,19 @@ func makeTagLinkInput(requestID int64, relevantTag database.Tag) linkTagInput {
 // run of searching the requests easier.
 func makeSearchRequestInput(parameters searchParameters) requestSearchInput {
 	inputSearch := requestSearchInput{tagBool: false, textBool: false}
-	if (parameters.tagSearch == nil || *parameters.tagSearch == "") && !(parameters.textSearch == nil || *parameters.textSearch == "") {
-		inputSearch.textSearch = parameters.textSearch
+	if (parameters.TagSearch == nil || *parameters.TagSearch == "") && !(parameters.TextSearch == nil || *parameters.TextSearch == "") {
+		inputSearch.textSearch = parameters.TextSearch
 		inputSearch.textBool = true
 		return inputSearch
 	}
-	if !(parameters.tagSearch == nil || *parameters.tagSearch == "") && (parameters.textSearch == nil || *parameters.textSearch == "") {
-		inputSearch.tagSearch = strings.Split(*parameters.tagSearch, " ")
+	if !(parameters.TagSearch == nil || *parameters.TagSearch == "") && (parameters.TextSearch == nil || *parameters.TextSearch == "") {
+		inputSearch.tagSearch = strings.Split(*parameters.TagSearch, " ")
 		inputSearch.tagBool = true
 		return inputSearch
 	}
-	if !(parameters.tagSearch == nil || *parameters.tagSearch == "") && !(parameters.textSearch == nil || *parameters.textSearch == "") {
-		inputSearch.tagSearch = strings.Split(*parameters.tagSearch, " ")
-		inputSearch.textSearch = parameters.textSearch
+	if !(parameters.TagSearch == nil || *parameters.TagSearch == "") && !(parameters.TextSearch == nil || *parameters.TextSearch == "") {
+		inputSearch.tagSearch = strings.Split(*parameters.TagSearch, " ")
+		inputSearch.textSearch = parameters.TextSearch
 		inputSearch.textBool = true
 		inputSearch.tagBool = true
 		return inputSearch

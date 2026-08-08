@@ -51,8 +51,8 @@ type linkTagInput struct {
 }
 
 type searchParameters struct {
-	textSearch *string `json:"text_search"`
-	tagSearch  *string `json:"tag_search"`
+	TextSearch *string `json:"text_search"`
+	TagSearch  *string `json:"tag_search"`
 }
 
 type requestSearchInput struct {
