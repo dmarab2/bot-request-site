@@ -113,6 +113,7 @@ func TestChangeRequestStatusCore(t *testing.T) {
 
 }
 
+// ensures that all three branches of the result search are used with the appropriate input.
 func TestSearchResultsCore(t *testing.T) {
 	testContext := t.Context()
 	testString := "testString"
