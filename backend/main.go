@@ -299,6 +299,7 @@ func main() {
 	serveMux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 	serveMux.HandleFunc("DELETE /admin/reset", cfg.deleteRequests)
 	serveMux.HandleFunc("POST /api/requests", cfg.createRequestWriter)
+	serveMux.HandleFunc("POST /api/requests/search", cfg.searchRequests)
 	serveMux.HandleFunc("POST /api/request_claims", cfg.createRequestClaimWriter)
 	serveMux.HandleFunc("GET /api/requests", cfg.getRequests)
 	serveMux.HandleFunc("PUT /api/requests/{requestID}", cfg.changeRequestStatus)
