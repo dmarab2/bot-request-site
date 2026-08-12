@@ -45,15 +45,11 @@ func (cfg *apiConfig) createRequestWriter(w http.ResponseWriter, req *http.Reque
 // Currently, a page is five requests, meaning only five requests are sent per query. This function is tied
 // to the pattern "GET /api/requests"
 func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
-	type parameters struct {
-		Status database.RequestStatus
-		ID     int64
-	}
 	requestStatus := req.URL.Query().Get("status")
 	var requestSlice []database.Request
 	var err error
 	if requestStatus != "" {
-		params := parameters{}
+		params := getRequestParameters{}
 		params.Status = database.RequestStatus(requestStatus)
 		cursorID := req.URL.Query().Get("after")
 		if cursorID == "" {

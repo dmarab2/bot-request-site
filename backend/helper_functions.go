@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -229,4 +230,33 @@ func makeSearchRequestInput(parameters searchParameters) requestSearchInput {
 		return inputSearch
 	}
 	return inputSearch
+}
+
+func getNextRequestPage(cursorID string, params getRequestParameters, req *http.Request, db *database.Queries) ([]database.Request, error) {
+	var err error
+	if cursorID == "" {
+		params.ID, err = db.GetFirstPageCursor(req.Context())
+		if err != nil {
+			errorString := "Error getting request cursor: " + err.Error()
+			return nil, errors.New(errorString)
+		}
+		requestSlice, err := db.GetNextRequestPage(req.Context(), database.GetNextRequestPageParams(params))
+		if err != nil {
+			errorString := "Error getting requests: " + err.Error()
+			return nil, errors.New(errorString)
+		}
+		return requestSlice, nil
+	} else {
+		params.ID, err = strconv.ParseInt(req.URL.Query().Get("after"), 10, 64)
+		if err != nil {
+			errorString := "Error parsing cursor: " + err.Error()
+			return nil, errors.New(errorString)
+		}
+		requestSlice, err := db.GetNextRequestPage(req.Context(), database.GetNextRequestPageParams(params))
+		if err != nil {
+			errorString := "Error getting requests: " + err.Error()
+			return nil, errors.New(errorString)
+		}
+		return requestSlice, nil
+	}
 }

@@ -61,3 +61,8 @@ type requestSearchInput struct {
 	textBool   bool
 	tagBool    bool
 }
+
+type getRequestParameters struct {
+	Status database.RequestStatus
+	ID     int64
+}
