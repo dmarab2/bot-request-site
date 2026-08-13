@@ -94,6 +94,8 @@ function RequestTextSearch() {
             ref={inputReference}
             value={value}
             placeholder='Enter request text here.'
+            className="w-full border rounded px-3 py-2"
+            onChange={(e) => setValue(e.target.value)}
             ></input>
         </div>
     )
