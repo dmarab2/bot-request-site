@@ -232,6 +232,7 @@ func makeSearchRequestInput(parameters searchParameters) requestSearchInput {
 	return inputSearch
 }
 
+// this gets a slice of five requests depending on if a cursor ID has been given or not.
 func getNextRequestPage(cursorID string, params getRequestParameters, req *http.Request, db *database.Queries) ([]database.Request, error) {
 	var err error
 	if cursorID == "" {
