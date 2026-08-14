@@ -52,32 +52,11 @@ func (cfg *apiConfig) getRequests(w http.ResponseWriter, req *http.Request) {
 		params := getRequestParameters{}
 		params.Status = database.RequestStatus(requestStatus)
 		cursorID := req.URL.Query().Get("after")
-		if cursorID == "" {
-			params.ID, err = cfg.db.GetFirstPageCursor(req.Context())
-			if err != nil {
-				log.Printf("Error getting request cursor: %s", err.Error())
-				respondWithError(w, 500, "Could not get requests.")
-				return
-			}
-			requestSlice, err = cfg.db.GetNextRequestPage(req.Context(), database.GetNextRequestPageParams(params))
-			if err != nil {
-				log.Printf("Error getting requests: %s\n", err.Error())
-				respondWithError(w, 500, "Could not get requests.")
-				return
-			}
-		} else {
-			params.ID, err = strconv.ParseInt(req.URL.Query().Get("after"), 10, 64)
-			if err != nil {
-				log.Printf("Error parsing cursor: %s\n", err.Error())
-				respondWithError(w, 500, "Could not get requests.")
-				return
-			}
-			requestSlice, err = cfg.db.GetNextRequestPage(req.Context(), database.GetNextRequestPageParams(params))
-			if err != nil {
-				log.Printf("Error getting requests: %s\n", err.Error())
-				respondWithError(w, 500, "Could not get requests.")
-				return
-			}
+		requestSlice, err = getNextRequestPage(cursorID, params, req, cfg.db)
+		if err != nil {
+			log.Printf("Error getting requests: %s\n", err.Error())
+			respondWithError(w, 500, "Could not get all requests.")
+			return
 		}
 	} else {
 		requestSlice, err = cfg.db.GetAllRequests(req.Context())
