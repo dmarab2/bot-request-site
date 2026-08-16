@@ -40,10 +40,14 @@ interface searchBoxProps {
 export default function App() {
     const [requestList, setRequestList] = useState<RequestJson>({data: [], pageNumber: 0, nextLimit: false, prevLimit: false})
     const [selectedRequest, setSelectedRequest] = useState<Request>({id: 0, createdAt: "", updatedAt: "", requestText: "", requestStatus: ""})
+    const [initialRun, setInitialRun] = useState<Boolean>(false)
     useEffect(() => {
-        fetchRequestList()
-        .then((data) => { setRequestList(data);}) 
-        .catch((err) => {console.error(err);});
+        if (initialRun == false){
+            setInitialRun(true)
+            fetchRequestList()
+            .then((data) => { setRequestList(data);}) 
+            .catch((err) => {console.error(err);});
+        }
     }, [])
     function handleSetRequest(request: Request){
         setSelectedRequest(request);
