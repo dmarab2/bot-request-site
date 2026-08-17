@@ -45,8 +45,6 @@ export function useDebouncedSuggestions(currentWord: string, delay: number = 400
 
         const debouncedFetch = returnDebounceTest(returnTagSuggestions, 250)
 
-        //debounceRef.current = debouncedFetch;
-
         debouncedFetch()
             .then((tagList) => {
                 setSuggestions(tagList);
@@ -59,11 +57,6 @@ export function useDebouncedSuggestions(currentWord: string, delay: number = 400
                 }
                 console.error("Error on the backend:", err);
             });
-            /*
-            .finally(() => {
-                setLoading(false);
-            });
-            */
 
         // cancels the timer automatically on the next keystroke or component unmount
         return () => {
