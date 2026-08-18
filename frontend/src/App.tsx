@@ -33,7 +33,6 @@ interface RequestSetterProp {
 }
 
 interface searchBoxProps {
-    suggestedTags: string[];
     onParentChange?: (value: string) => void;
 }
 
@@ -59,7 +58,7 @@ export default function App() {
                 <ul><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
                 <ViewBox selectedRequest={selectedRequest}  />
                 <RequestTextSearch />
-                <RequestTagSearch suggestedTags={MOCK_TAGS_HERE} />
+                <RequestTagSearch />
             </div>
             <aside>
             </aside>
@@ -106,7 +105,7 @@ function RequestTextSearch() {
 }
 
 
-function RequestTagSearch({ suggestedTags, onParentChange }: searchBoxProps) {
+function RequestTagSearch({ onParentChange }: searchBoxProps) {
     const [value, setValue] = useState<string>("");
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
