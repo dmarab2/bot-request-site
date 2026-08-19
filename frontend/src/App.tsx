@@ -118,6 +118,7 @@ function RequestTagSearch({ onParentChange }: searchBoxProps) {
         return lastWord ? lastWord[0] : "";
     },[value])
 
+    // debouncing is used to ensure that multiple requests aren't sent while typing is done
     const { suggestions, loading, forceCancel } = useDebouncedSuggestions(currentWord, 400)
 
     const applySuggestion = useCallback((tag: string) => { 
@@ -138,6 +139,7 @@ function RequestTagSearch({ onParentChange }: searchBoxProps) {
       });
     }, [value, onParentChange])
 
+    // having a way to navigate suggestions with the keys is useful for typing many tags
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (!showDropdown || suggestions.length === 0) return;
         if (e.key === "ArrowDown") {
