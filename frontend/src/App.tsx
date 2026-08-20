@@ -2,12 +2,6 @@ import { useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
-const MOCK_TAGS_HERE: string[] = [
-  "1girl", "1boy", "solo", "long_hair", "short_hair", "blonde_hair", 
-  "blue_eyes", "brown_eyes", "holding_hands", "smile", "blush", 
-  "background", "scenery", "highres", "masterpiece", "absurdres"
-];
-
 type requestStatus = "open" | "in_progress" | "fulfilled" | "cancelled" | ""
 type elementVisibility = "none" | "flex"
 
