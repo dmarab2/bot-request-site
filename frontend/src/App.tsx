@@ -27,7 +27,11 @@ interface RequestSetterProp {
     onRequestClick: (request: Request) => void
 }
 
-interface searchBoxProps {
+interface textSearchBoxProps {
+    onParentChange?: (value: string) => void;
+}
+
+interface tagSearchBoxProps {
     onParentChange?: (value: string) => void;
 }
 
@@ -82,6 +86,16 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
     )
 }
 
+function RequestSearchForm(){
+    return (
+        <div>
+            <RequestTextSearch />
+            <RequestTagSearch />
+            <button>Search</button>
+        </div>
+    )
+}
+
 function RequestTextSearch() {
     const [value, setValue] = useState<string>("");
     const inputReference = useRef<HTMLInputElement>(null);
@@ -100,7 +114,7 @@ function RequestTextSearch() {
 }
 
 
-function RequestTagSearch({ onParentChange }: searchBoxProps) {
+function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
     const [value, setValue] = useState<string>("");
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
