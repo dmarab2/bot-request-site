@@ -3,7 +3,8 @@ import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
 type requestStatus = "open" | "in_progress" | "fulfilled" | "cancelled" | ""
-type elementVisibility = "none" | "flex"
+// gonna comment this out because I don't have a use for it yet but might in the future
+//type elementVisibility = "none" | "flex"
 
 interface Request {
     id: number;
