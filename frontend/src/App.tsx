@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback} from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
@@ -33,6 +33,11 @@ interface textSearchBoxProps {
 
 interface tagSearchBoxProps {
     onParentChange?: (value: string) => void;
+}
+
+interface formProps {
+    requestList: Request[]
+    setRequestList: React.Dispatch<React.SetStateAction<RequestJson>>
 }
 
 export default function App() {
@@ -86,12 +91,13 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
     )
 }
 
-function RequestSearchForm(){
+function RequestSearchForm({ requestList, setRequestList }: formProps){
+    const initialRequestList = requestList
     return (
         <div>
             <RequestTextSearch />
             <RequestTagSearch />
-            <button>Search</button>
+            <button onClick={() => setRequestList}>Search</button>
         </div>
     )
 }
