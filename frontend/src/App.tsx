@@ -2,6 +2,44 @@ import React, { useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
+const mockRequestList: Request[] = [
+    {
+        id: 1,
+        createdAt: "2026-08-22",
+        updatedAt: "2026-08-22",
+        requestText: "mock text",
+        requestStatus: "open"
+    },
+    {
+        id: 2,
+        createdAt: "2026-08-22",
+        updatedAt: "2026-08-22",
+        requestText: "mock text",
+        requestStatus: "open"
+    },
+    {
+        id: 3,
+        createdAt: "2026-08-22",
+        updatedAt: "2026-08-22",
+        requestText: "mock text",
+        requestStatus: "open"
+    },
+    {
+        id: 4,
+        createdAt: "2026-08-22",
+        updatedAt: "2026-08-22",
+        requestText: "mock text",
+        requestStatus: "open"
+    },
+    {
+        id: 5,
+        createdAt: "2026-08-22",
+        updatedAt: "2026-08-22",
+        requestText: "mock text",
+        requestStatus: "open"
+    },
+]
+
 type requestStatus = "open" | "in_progress" | "fulfilled" | "cancelled" | ""
 // gonna comment this out because I don't have a use for it yet but might in the future
 //type elementVisibility = "none" | "flex"
@@ -37,6 +75,10 @@ interface tagSearchBoxProps {
 
 interface formProps {
     requestList: Request[]
+    setRequestList: React.Dispatch<React.SetStateAction<RequestJson>>
+}
+
+interface searchButtonProps {
     setRequestList: React.Dispatch<React.SetStateAction<RequestJson>>
 }
 
@@ -97,8 +139,16 @@ function RequestSearchForm({ requestList, setRequestList }: formProps){
         <div>
             <RequestTextSearch />
             <RequestTagSearch />
-            <button onClick={() => setRequestList}>Search</button>
+            <RequestSearchButton setRequestList={setRequestList} />
         </div>
+    )
+}
+
+function RequestSearchButton({ setRequestList }: searchButtonProps) {
+    return (
+        <>
+            <button onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
+        </>
     )
 }
 
