@@ -74,7 +74,7 @@ interface tagSearchBoxProps {
 }
 
 interface formProps {
-    requestList: Request[]
+    requestList: RequestJson
     setRequestList: React.Dispatch<React.SetStateAction<RequestJson>>
 }
 
@@ -103,8 +103,7 @@ export default function App() {
             <div>
                 <ul><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
                 <ViewBox selectedRequest={selectedRequest}  />
-                <RequestTextSearch />
-                <RequestTagSearch />
+                <RequestSearchForm requestList={requestList} setRequestList={setRequestList} />
             </div>
             <aside>
             </aside>
