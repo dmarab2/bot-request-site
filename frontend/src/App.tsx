@@ -100,8 +100,8 @@ export default function App() {
 
     return (
         <div>
-            <div>
-                <ul><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
+            <div className="flex flex-col">
+                <ul className="m-5 bg-slate-800 border-2"><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
                 <ViewBox selectedRequest={selectedRequest}  />
                 <RequestSearchForm requestList={requestList} setRequestList={setRequestList} />
             </div>
@@ -113,7 +113,7 @@ export default function App() {
 
 function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
     const listItems = requestList.data.map(request => 
-        <li key={request.id} onClick={() => onRequestClick(request)}>
+        <li className="shadow-md border-slate-600 border-b hover:bg-blue-500 active:bg-blue-700 flex-initial" key={request.id} onClick={() => onRequestClick(request)}>
             {request.requestText}
         </li>
     );
@@ -124,7 +124,7 @@ function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
 
 function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
     return (
-        <div>
+        <div className="bg-slate-800 border-2 m-5">
             <p>Request: {selectedRequest.requestText}</p>
             <p>Status: {selectedRequest.requestStatus}</p>
             <p>Created on: {selectedRequest.createdAt}</p>
@@ -135,7 +135,7 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
 function RequestSearchForm({ requestList, setRequestList }: formProps){
     const initialRequestList = requestList
     return (
-        <div>
+        <div className="flex flex-col">
             <RequestTextSearch />
             <RequestTagSearch />
             <RequestSearchButton setRequestList={setRequestList} />
@@ -146,7 +146,7 @@ function RequestSearchForm({ requestList, setRequestList }: formProps){
 function RequestSearchButton({ setRequestList }: searchButtonProps) {
     return (
         <>
-            <button onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
+            <button className="m-5 border-2 bg-gray-500 rounded-xs" onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
         </>
     )
 }
@@ -156,7 +156,7 @@ function RequestTextSearch() {
     const inputReference = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="relative w-full">
+        <div className="my-2 relative w-full">
             <input
             ref={inputReference}
             value={value}
