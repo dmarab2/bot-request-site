@@ -101,7 +101,9 @@ export default function App() {
     return (
         <div>
             <div className="flex flex-col">
-                <ul className="m-5 bg-slate-800 border-2"><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
+                <div>
+                    <ul className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-lg ring-2 ring-gray-400 flex flex-col items-center"><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
+                </div>
                 <ViewBox selectedRequest={selectedRequest}  />
                 <RequestSearchForm requestList={requestList} setRequestList={setRequestList} />
             </div>
@@ -113,7 +115,7 @@ export default function App() {
 
 function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
     const listItems = requestList.data.map(request => 
-        <li className="shadow-md border-slate-600 border-b hover:bg-blue-500 active:bg-blue-700 flex-initial" key={request.id} onClick={() => onRequestClick(request)}>
+        <li className="bg-stone-700/50 border-slate-600 border-b hover:bg-blue-500 active:bg-blue-700 w-2/3" key={request.id} onClick={() => onRequestClick(request)}>
             {request.requestText}
         </li>
     );
