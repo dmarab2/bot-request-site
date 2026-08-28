@@ -101,9 +101,9 @@ export default function App() {
     return (
         <div>
             <div className="flex flex-col">
-                <div>
-                    <ul className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-lg ring-2 ring-gray-400 flex flex-col items-center"><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></ul>
-                </div>
+                <ul className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col items-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
+                    <RequestLister requestList={requestList} onRequestClick={handleSetRequest} />
+                </ul>
                 <ViewBox selectedRequest={selectedRequest}  />
                 <RequestSearchForm requestList={requestList} setRequestList={setRequestList} />
             </div>
@@ -145,10 +145,11 @@ function RequestSearchForm({ requestList, setRequestList }: formProps){
     )
 }
 
+// shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]
 function RequestSearchButton({ setRequestList }: searchButtonProps) {
     return (
         <>
-            <button className="m-5 border-2 bg-gray-500 rounded-xs" onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
+            <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)] " onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
         </>
     )
 }
@@ -158,7 +159,7 @@ function RequestTextSearch() {
     const inputReference = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="my-2 relative w-full">
+        <div className="m-3 relative w-full">
             <input
             ref={inputReference}
             value={value}
@@ -223,7 +224,7 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
     };
 
     return (
-        <div className="relative w-full">
+        <div className="m-3 relative w-full">
             <input
             ref={inputReference}
             value={value}
