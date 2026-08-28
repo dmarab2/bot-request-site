@@ -99,13 +99,17 @@ export default function App() {
     }
 
     return (
-        <div>
-            <div className="flex flex-col">
+        <div className='grid grid-cols-7 grid-rows-3 gap-4'>
+            <div className="flex flex-col col-span-3 col-start-3">
                 <ul className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col items-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
                     <RequestLister requestList={requestList} onRequestClick={handleSetRequest} />
                 </ul>
+            </div>
+            <div className="flex flex-col col-span-3 col-start-3 row-start-2">
                 <ViewBox selectedRequest={selectedRequest}  />
-                <RequestSearchForm requestList={requestList} setRequestList={setRequestList} />
+            </div>
+            <div className="flex flex-col col-span-2 col-start-1 row-start-2">
+                <RequestSearchForm requestList={requestList} setRequestList={setRequestList}/>
             </div>
             <aside>
             </aside>
@@ -137,7 +141,7 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
 function RequestSearchForm({ requestList, setRequestList }: formProps){
     const initialRequestList = requestList
     return (
-        <div className="flex flex-col">
+        <div className="bg-slate-800 border-2 m-5 flex flex-col p-4">
             <RequestTextSearch />
             <RequestTagSearch />
             <RequestSearchButton setRequestList={setRequestList} />
@@ -159,12 +163,12 @@ function RequestTextSearch() {
     const inputReference = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="m-3 relative w-full">
+        <div className="relative w-full">
             <input
             ref={inputReference}
             value={value}
             placeholder='Enter request text here.'
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 bg-black-900"
             onChange={(e) => setValue(e.target.value)}
             ></input>
         </div>
@@ -224,7 +228,7 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
     };
 
     return (
-        <div className="m-3 relative w-full">
+        <div>
             <input
             ref={inputReference}
             value={value}
