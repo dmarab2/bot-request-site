@@ -86,6 +86,7 @@ export default function App() {
     const [requestList, setRequestList] = useState<RequestJson>({data: [], pageNumber: 0, nextLimit: false, prevLimit: false})
     const [selectedRequest, setSelectedRequest] = useState<Request>({id: 0, createdAt: "", updatedAt: "", requestText: "", requestStatus: ""})
     const [initialRun, setInitialRun] = useState<Boolean>(false)
+    const newRequestRef = useRef(null);
     useEffect(() => {
         if (initialRun == false){
             setInitialRun(true)
@@ -110,6 +111,9 @@ export default function App() {
             </div>
             <div className="flex flex-col col-span-2 col-start-1 row-start-2">
                 <RequestSearchForm requestList={requestList} setRequestList={setRequestList}/>
+            </div>
+            <div className="flex flex-col col-span-2 col-start-1 row-start-3 p-4">
+            <NewRequestForm />
             </div>
             <aside>
             </aside>
@@ -141,7 +145,7 @@ function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
 function RequestSearchForm({ requestList, setRequestList }: formProps){
     const initialRequestList = requestList
     return (
-        <div className="bg-slate-800 border-2 m-5 flex flex-col p-4">
+        <div className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)] p-4">
             <RequestTextSearch />
             <RequestTagSearch />
             <RequestSearchButton setRequestList={setRequestList} />
@@ -260,6 +264,30 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
                 </ul>
             )}
         </div>
+    )
+}
+
+function NewRequestForm() {
+    const newRequestRef = useRef<HTMLDialogElement>(null);
+    
+    const openWindow = () => {
+        newRequestRef.current?.showModal();
+    }
+
+    const closeWindow = () => {
+        newRequestRef.current?.close();
+    }
+
+    return (
+        <>
+            <button onClick={openWindow}>Make a New Request</button>
+
+            <dialog ref={newRequestRef} className="m-auto">
+                <h2>This is a modal!</h2>
+                <h2>Hi World!</h2>
+                <button onClick={closeWindow}>Close this Window</button>
+            </dialog>
+        </>
     )
 }
 
