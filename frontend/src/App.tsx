@@ -157,7 +157,7 @@ function RequestSearchForm({ requestList, setRequestList }: formProps){
 function RequestSearchButton({ setRequestList }: searchButtonProps) {
     return (
         <>
-            <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)] " onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
+            <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]" onClick={() => setRequestList({data: mockRequestList, pageNumber: 0, nextLimit: false, prevLimit: false})}>Search</button>
         </>
     )
 }
@@ -280,12 +280,12 @@ function NewRequestForm() {
 
     return (
         <>
-            <button onClick={openWindow}>Make a New Request</button>
+            <button onClick={openWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
 
-            <dialog ref={newRequestRef} className="m-auto">
+            <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
                 <h2>This is a modal!</h2>
                 <h2>Hi World!</h2>
-                <button onClick={closeWindow}>Close this Window</button>
+                <button onClick={closeWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
             </dialog>
         </>
     )
