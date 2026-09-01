@@ -172,7 +172,7 @@ function RequestTextSearch() {
             ref={inputReference}
             value={value}
             placeholder='Enter request text here.'
-            className="w-full border rounded px-3 py-2 bg-black-900"
+            className="w-full border rounded px-3 py-2 bg-black my-2"
             onChange={(e) => setValue(e.target.value)}
             ></input>
         </div>
@@ -245,7 +245,7 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
             onBlur={() => {setTimeout(() => setShowDropdown(false), 100); }}
             onFocus={() => setShowDropdown(true)}
             onKeyDown={handleKeyDown}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 bg-black my-2"
             placeholder="Enter tags here."
             />
             {showDropdown && (suggestions.length > 0 || loading) && (
@@ -283,9 +283,12 @@ function NewRequestForm() {
             <button onClick={openWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
 
             <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
-                <h2>This is a modal!</h2>
-                <h2>Hi World!</h2>
-                <button onClick={closeWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
+                <div className='flex flex-col min-w-100 min-h-50'>
+                    <h2>Enter your request</h2>
+                    <textarea placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black'></textarea>
+                    <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Submit Request</button>
+                    <button onClick={closeWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
+                </div>
             </dialog>
         </>
     )
