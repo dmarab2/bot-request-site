@@ -268,6 +268,7 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
 }
 
 function NewRequestForm() {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const newRequestRef = useRef<HTMLDialogElement>(null);
     
     const openWindow = () => {
@@ -277,17 +278,35 @@ function NewRequestForm() {
     const closeWindow = () => {
         newRequestRef.current?.close();
     }
+    
+    useEffect(() => {
+        const modal = newRequestRef.current
+        if (!modal) return;
+        
+        if (isOpen) {
+            openWindow();
+            return;
+        } else {
+            closeWindow();
+            return;
+        }
+
+    })
+    
+    const makeNewRequest = useEffect
 
     return (
         <>
-            <button onClick={openWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
+            <button onClick={() => setIsOpen(true)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
 
             <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
                 <div className='flex flex-col min-w-100 min-h-50'>
                     <h2>Enter your request</h2>
                     <textarea placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black'></textarea>
+                    <h2>(Optional): Add tags to your request.</h2>
+                    <input placeholder='Enter request tags here.' className='m2 bg-black'></input>
                     <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Submit Request</button>
-                    <button onClick={closeWindow} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
+                    <button onClick={() => setIsOpen(false)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
                 </div>
             </dialog>
         </>
