@@ -304,7 +304,7 @@ function NewRequestForm() {
                     <h2>Enter your request</h2>
                     <textarea placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black'></textarea>
                     <h2>(Optional): Add tags to your request.</h2>
-                    <input placeholder='Enter request tags here.' className='m2 bg-black'></input>
+                    <RequestTagSearch />
                     <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Submit Request</button>
                     <button onClick={() => setIsOpen(false)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
                 </div>
