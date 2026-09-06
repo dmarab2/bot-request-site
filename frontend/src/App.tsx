@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback} from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback, type JSX} from 'react';
 import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
@@ -167,7 +167,7 @@ function RequestTextSearch() {
     const inputReference = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="relative w-full">
+        <div className="relative">
             <input
             ref={inputReference}
             value={value}
@@ -185,6 +185,8 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const inputReference = useRef<HTMLInputElement>(null);
+    const listReference = useRef<HTMLLIElement[]>([]);
+    const targetReference = useRef<HTMLLIElement>(null);
 
     const currentWord = useMemo(() => {
         const cursor = inputReference.current?.selectionStart ?? value.length;
@@ -231,8 +233,17 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
         }
     };
 
+    useEffect(() => {
+        if (!showDropdown) return;
+        const el = listReference.current[activeIndex]
+        el?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+        })
+        }, [activeIndex, listReference])
+
     return (
-        <div>
+        <div className='relative'>
             <input
             ref={inputReference}
             value={value}
@@ -257,6 +268,7 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
                         className={`px-3 py-1 cursor-pointer ${
                         index === activeIndex ? "bg-blue-100" : ""
                         }`}
+                        ref={(el) => {listReference.current[index] = el!}}
                         >
                             {tag}
                         </li>
