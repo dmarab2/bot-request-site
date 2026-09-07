@@ -50,7 +50,18 @@ interface Request {
     updatedAt: string;
     requestText: string;
     requestStatus: requestStatus
+}
 
+interface RequestPayload {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    request_text: string;
+    status_: requestStatus
+}
+
+interface NewRequest {
+    body: string
 }
 
 interface RequestJson {
@@ -282,6 +293,8 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
 function NewRequestForm() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const newRequestRef = useRef<HTMLDialogElement>(null);
+    const [textValue, setTextValue] = useState<string>("");
+    const [tagValue, setTagValue] = useState<string>("");
     
     const openWindow = () => {
         newRequestRef.current?.showModal();
@@ -314,9 +327,9 @@ function NewRequestForm() {
             <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
                 <div className='flex flex-col min-w-100 min-h-50'>
                     <h2>Enter your request</h2>
-                    <textarea placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black'></textarea>
+                    <textarea value={textValue} placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black' onChange={(e) => setTextValue(e.target.value)}></textarea>
                     <h2>(Optional): Add tags to your request.</h2>
-                    <RequestTagSearch />
+                    <RequestTagSearch onParentChange={setTagValue} />
                     <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Submit Request</button>
                     <button onClick={() => setIsOpen(false)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
                 </div>
@@ -326,9 +339,9 @@ function NewRequestForm() {
 }
 
 async function fetchRequestList(): Promise<RequestJson>{
-    console.log(import.meta.env.VITE_BACKEND_URL)
+    console.log(import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_GET_OPEN_REQUESTS)
     try {
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL);
+        const response = await fetch(import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_GET_OPEN_REQUESTS);
         if (!response.ok) {
             throw new Error(`There was an HTTP Error, Status: ${response.status}`);
         }
@@ -348,7 +361,41 @@ async function fetchRequestList(): Promise<RequestJson>{
         };
         return transformedData;
     } catch(error) {
-        console.error("There was an error:", error);
+        console.error("There was an error: ", error);
         throw error;
     }
+}
+
+async function submitNewRequest(newRequest: NewRequest): Promise<Request>{
+    const postURL = import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_REQUESTS;
+    try{
+        const response = await fetch(postURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newRequest)
+        });
+        if (!response.ok) {
+            throw new Error(`Error! Status is ${response.status}`)
+        }
+        const data: RequestPayload = await response.json();
+        const finishedRequest: Request = convertRequestPayload(data);
+        return finishedRequest;
+
+    } catch(error) {
+        console.error("There was an error: ", error)
+        throw error;
+    }
+}
+
+function convertRequestPayload(payload: RequestPayload): Request{
+    const newRequest: Request = {
+        id: payload.id,
+        createdAt: payload.created_at,
+        updatedAt: payload.updated_at,
+        requestText: payload.request_text,
+        requestStatus: payload.status_
+    };
+    return newRequest;
 }
