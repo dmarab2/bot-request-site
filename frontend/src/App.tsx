@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback, type JSX, useActionState} from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
@@ -357,9 +357,9 @@ function NewRequestForm() {
     
     return (
         <>
-            <button onClick={() => setIsOpen(true)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
+            <button type='button' onClick={() => setIsOpen(true)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
 
-            <dialog className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
+            <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
                 <form onSubmit={formAction}>
                     <div className='flex flex-col min-w-100 min-h-50'>
                         <h2>Enter your request</h2>
@@ -378,9 +378,9 @@ function NewRequestForm() {
 
 
 async function fetchRequestList(): Promise<RequestJson>{
-    console.log(import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_GET_OPEN_REQUESTS)
+    console.log(`${import.meta.env.VITE_BACKEND_ROOT}${import.meta.env.VITE_BACKEND_GET_OPEN_REQUESTS}`)
     try {
-        const response = await fetch(import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_GET_OPEN_REQUESTS);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_ROOT}${import.meta.env.VITE_BACKEND_GET_OPEN_REQUESTS}`);
         if (!response.ok) {
             throw new Error(`There was an HTTP Error, Status: ${response.status}`);
         }
@@ -406,7 +406,7 @@ async function fetchRequestList(): Promise<RequestJson>{
 }
 
 async function submitNewRequest(newRequest: NewRequest): Promise<Request>{
-    const postURL = import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_REQUESTS;
+    const postURL = import.meta.env.VITE_BACKEND_ROOT + import.meta.env.VITE_BACKEND_REQUESTS;
     try{
         const response = await fetch(postURL, {
             method: 'POST',
