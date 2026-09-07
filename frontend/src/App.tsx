@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback, type JSX} from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback, type JSX, useActionState} from 'react';
 import './App.css'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
@@ -82,6 +82,7 @@ interface textSearchBoxProps {
 
 interface tagSearchBoxProps {
     onParentChange?: (value: string) => void;
+    name: string
 }
 
 interface formProps {
@@ -158,7 +159,7 @@ function RequestSearchForm({ requestList, setRequestList }: formProps){
     return (
         <div className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)] p-4">
             <RequestTextSearch />
-            <RequestTagSearch />
+            <RequestTagSearch name='tagSearch' />
             <RequestSearchButton setRequestList={setRequestList} />
         </div>
     )
@@ -191,7 +192,7 @@ function RequestTextSearch() {
 }
 
 
-function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
+function RequestTagSearch({ onParentChange, name }: tagSearchBoxProps) {
     const [value, setValue] = useState<string>("");
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -264,6 +265,7 @@ function RequestTagSearch({ onParentChange }: tagSearchBoxProps) {
                 setShowDropdown(true)
                 setActiveIndex(0);
             }}
+            name={name}
             onBlur={() => {setTimeout(() => setShowDropdown(false), 100); }}
             onFocus={() => setShowDropdown(true)}
             onKeyDown={handleKeyDown}
@@ -295,6 +297,9 @@ function NewRequestForm() {
     const newRequestRef = useRef<HTMLDialogElement>(null);
     const [textValue, setTextValue] = useState<string>("");
     const [tagValue, setTagValue] = useState<string>("");
+    const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success' | 'error'
+    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [responseData, setResponseData] = useState<Request>();
     
     const openWindow = () => {
         newRequestRef.current?.showModal();
@@ -317,26 +322,60 @@ function NewRequestForm() {
         }
 
     })
-    
-    const makeNewRequest = useEffect
 
+    async function formAction(event: React.SubmitEvent<HTMLFormElement>){
+        event.preventDefault();
+        setStatus("submitting")
+        setErrorMessage("")
+
+        const formData = new FormData(event.currentTarget)
+        const bodyText = formData.get("requestText")?.toString()
+        if (bodyText === undefined) throw new Error("Request text cannot be empty!")
+        const textRequest: NewRequest = {
+            body: bodyText
+        }
+        try{
+            console.log("Now sending request...")
+            const responseRequest = submitNewRequest(textRequest);
+            responseRequest
+            .then((data) => {
+                setResponseData(data);
+                console.log("Successfully submitted new request!");
+                setStatus("Idle");
+                event.target.reset();
+            }) 
+            .catch((err) => {throw new Error(err);});
+        } catch(error){
+            if (error instanceof Error){
+                console.error("There was an error: ", error.message);
+                setErrorMessage(error.message)
+            }
+            setStatus("error")
+        }
+
+    }
+    
     return (
         <>
             <button onClick={() => setIsOpen(true)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
 
-            <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
-                <div className='flex flex-col min-w-100 min-h-50'>
-                    <h2>Enter your request</h2>
-                    <textarea value={textValue} placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black' onChange={(e) => setTextValue(e.target.value)}></textarea>
-                    <h2>(Optional): Add tags to your request.</h2>
-                    <RequestTagSearch onParentChange={setTagValue} />
-                    <button className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Submit Request</button>
-                    <button onClick={() => setIsOpen(false)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
-                </div>
+            <dialog className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
+                <form onSubmit={formAction}>
+                    <div className='flex flex-col min-w-100 min-h-50'>
+                        <h2>Enter your request</h2>
+                        <textarea name='requestText' placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black' onChange={(e) => setTextValue(e.target.value)}></textarea>
+                        <h2>(Optional): Add tags to your request.</h2>
+                        <RequestTagSearch name='requestTags' onParentChange={setTagValue} />
+                        <button type="submit" className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">{status === "submitting" ? "Submitting..." : "Submit Request"}</button>
+                        <button type="button" onClick={() => setIsOpen(false)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Close this Window</button>
+
+                    </div>
+                </form>
             </dialog>
         </>
     )
 }
+
 
 async function fetchRequestList(): Promise<RequestJson>{
     console.log(import.meta.env.BACKEND_ROOT + import.meta.env.BACKEND_GET_OPEN_REQUESTS)
@@ -380,7 +419,7 @@ async function submitNewRequest(newRequest: NewRequest): Promise<Request>{
             throw new Error(`Error! Status is ${response.status}`)
         }
         const data: RequestPayload = await response.json();
-        const finishedRequest: Request = convertRequestPayload(data);
+        const finishedRequest: Request = convertRequestPayloadToRequest(data);
         return finishedRequest;
 
     } catch(error) {
@@ -389,7 +428,7 @@ async function submitNewRequest(newRequest: NewRequest): Promise<Request>{
     }
 }
 
-function convertRequestPayload(payload: RequestPayload): Request{
+function convertRequestPayloadToRequest(payload: RequestPayload): Request{
     const newRequest: Request = {
         id: payload.id,
         createdAt: payload.created_at,
@@ -398,4 +437,15 @@ function convertRequestPayload(payload: RequestPayload): Request{
         requestStatus: payload.status_
     };
     return newRequest;
+}
+
+function convertRequestToRequestPayload(request: Request): RequestPayload{
+    const newPayload: RequestPayload = {
+        id: request.id,
+        created_at: request.createdAt,
+        updated_at: request.updatedAt,
+        request_text: request.requestText,
+        status_: request.requestStatus
+    };
+    return newPayload;
 }
