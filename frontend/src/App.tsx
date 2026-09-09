@@ -297,7 +297,7 @@ function NewRequestForm() {
     const newRequestRef = useRef<HTMLDialogElement>(null);
     const [textValue, setTextValue] = useState<string>("");
     const [tagValue, setTagValue] = useState<string>("");
-    const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success' | 'error'
+    const [status, setStatus] = useState('idle');
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [responseData, setResponseData] = useState<Request>();
     
