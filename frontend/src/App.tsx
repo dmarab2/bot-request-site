@@ -330,6 +330,7 @@ function NewRequestForm() {
 
         const formData = new FormData(event.currentTarget)
         const bodyText = formData.get("requestText")?.toString()
+        const tagText = formData.get("requestTags")?.toString().split(", ")
         if (bodyText === undefined) throw new Error("Request text cannot be empty!")
         const textRequest: NewRequest = {
             body: bodyText
