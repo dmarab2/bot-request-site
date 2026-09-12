@@ -7,5 +7,5 @@ CREATE TABLE tag_aliases (
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- +goose DOWN
+-- +goose Down
 DROP TABLE tag_aliases;

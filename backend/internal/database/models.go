@@ -5,6 +5,7 @@
 package database
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"fmt"
 	"time"
@@ -128,7 +129,7 @@ type Tag struct {
 type TagAlias struct {
 	ID          int64
 	Name        string
-	TagID       int64
+	TagID       sql.NullInt64
 	CreatedAt   time.Time
 	AliasStatus SandboxStatus
 }
