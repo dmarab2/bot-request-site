@@ -5,6 +5,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"log"
@@ -260,4 +261,62 @@ func getNextRequestPage(cursorID string, params getRequestParameters, req *http.
 		}
 		return requestSlice, nil
 	}
+}
+
+func linkTagsToRequest(ctx context.Context, reqID int64, tagList []string, db *database.Queries) error {
+	for _, tag := range tagList {
+		tagNum, err := db.DoesTagExist(ctx, tag)
+		if err != nil {
+			errorString := "Error checking tag: " + err.Error()
+			return errors.New(errorString)
+		}
+		if tagNum == 1 {
+			tagNullstring := sql.NullString{String: tag, Valid: true}
+			tagID, err := db.GetTagID(ctx, tagNullstring)
+			if err != nil {
+				errorString := "Error checking tag: " + err.Error()
+				return errors.New(errorString)
+			}
+			params := database.CreateRequestTagLinkParams{RequestID: reqID, TagID: tagID}
+			_, err = db.CreateRequestTagLink(ctx, params)
+			if err != nil {
+				errorString := "Error creating tag link: " + err.Error()
+				return errors.New(errorString)
+			}
+			return nil
+		}
+		tagAliasNum, err := db.DoesTagAliasExist(ctx, tag)
+		if err != nil {
+			errorString := "Error checking tag: " + err.Error()
+			return errors.New(errorString)
+		}
+		if tagAliasNum == 1 {
+			tagAliasNullstring := sql.NullString{String: tag, Valid: true}
+			tagAliasID, err := db.GetTagAliasID(ctx, tagAliasNullstring)
+			if err != nil {
+				errorString := "Error checking tag: " + err.Error()
+				return errors.New(errorString)
+			}
+			linkedTagId, err := db.GetTagIdFromAlias(ctx, tagAliasID)
+			params := database.CreateRequestTagLinkParams{RequestID: reqID, TagID: linkedTagId.Int64}
+			_, err = db.CreateRequestTagLink(ctx, params)
+			if err != nil {
+				errorString := "Error creating tag link: " + err.Error()
+				return errors.New(errorString)
+			}
+			return nil
+
+		}
+		newTag, err := db.CreateTag(ctx, tag)
+		if err != nil {
+			errorString := "Error creating a new tag: " + err.Error()
+			return errors.New(errorString)
+		}
+		_, err = db.CreateTagAlias(ctx, database.CreateTagAliasParams{newTag.Name, sql.NullInt64{newTag.ID, true}})
+		if err != nil {
+			errorString := "Error creating a new tag alias: " + err.Error()
+			return errors.New(errorString)
+		}
+	}
+	return nil
 }
