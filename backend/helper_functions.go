@@ -270,6 +270,7 @@ func linkTagsToRequest(ctx context.Context, reqID int64, tagList []string, db *d
 			errorString := "Error checking tag: " + err.Error()
 			return errors.New(errorString)
 		}
+		// if a master tag exists for this tag
 		if tagNum == 1 {
 			tagNullstring := sql.NullString{String: tag, Valid: true}
 			tagID, err := db.GetTagID(ctx, tagNullstring)
@@ -290,6 +291,7 @@ func linkTagsToRequest(ctx context.Context, reqID int64, tagList []string, db *d
 			errorString := "Error checking tag: " + err.Error()
 			return errors.New(errorString)
 		}
+		// if an alias tag exists for this tag
 		if tagAliasNum == 1 {
 			tagAliasNullstring := sql.NullString{String: tag, Valid: true}
 			tagAliasID, err := db.GetTagAliasID(ctx, tagAliasNullstring)
@@ -307,6 +309,7 @@ func linkTagsToRequest(ctx context.Context, reqID int64, tagList []string, db *d
 			return nil
 
 		}
+		// if neither tag exist, make a shadow master tag and an alias for it
 		newTag, err := db.CreateTag(ctx, tag)
 		if err != nil {
 			errorString := "Error creating a new tag: " + err.Error()
