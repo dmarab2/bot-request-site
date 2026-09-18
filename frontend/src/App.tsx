@@ -76,10 +76,6 @@ interface RequestSetterProp {
     onRequestClick: (request: Request) => void
 }
 
-interface textSearchBoxProps {
-    onParentChange?: (value: string) => void;
-}
-
 interface tagSearchBoxProps {
     onParentChange?: (value: string) => void;
     name: string
@@ -98,7 +94,6 @@ export default function App() {
     const [requestList, setRequestList] = useState<RequestJson>({data: [], pageNumber: 0, nextLimit: false, prevLimit: false})
     const [selectedRequest, setSelectedRequest] = useState<Request>({id: 0, createdAt: "", updatedAt: "", requestText: "", requestStatus: ""})
     const [initialRun, setInitialRun] = useState<Boolean>(false)
-    const newRequestRef = useRef(null);
     useEffect(() => {
         if (initialRun == false){
             setInitialRun(true)
