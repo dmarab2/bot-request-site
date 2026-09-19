@@ -310,6 +310,7 @@ func linkTagsToRequest(ctx context.Context, reqID int64, tagList []string, db *d
 
 		}
 		// if neither tag exist, make a shadow master tag and an alias for it
+		// note: should I do something with IDs?
 		newTag, err := db.CreateTag(ctx, tag)
 		if err != nil {
 			errorString := "Error creating a new tag: " + err.Error()
