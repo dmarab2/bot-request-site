@@ -263,6 +263,7 @@ func getNextRequestPage(cursorID string, params getRequestParameters, req *http.
 	}
 }
 
+// take all requests in an array and links a master tag to them. makes a master tag if one doesn't exist.
 func linkTagsToRequest(ctx context.Context, reqID int64, tagList []string, db *database.Queries) error {
 	for _, tag := range tagList {
 		tagNum, err := db.DoesTagExist(ctx, tag)
