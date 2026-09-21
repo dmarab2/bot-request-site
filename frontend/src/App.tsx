@@ -109,7 +109,7 @@ export default function App() {
     return (
         <div className='grid grid-cols-8 grid-rows-3 gap-4'>
             <div className="flex flex-col col-span-5 col-start-3">
-                <ul className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col items-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
+                <ul className="bg-gray-800/95 backdrop-blur-lg rounded-lg bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 shadow-xl flex flex-col items-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),_0_4px_12px_rgba(0,0,0,0.6)]">
                     <RequestLister requestList={requestList} onRequestClick={handleSetRequest} />
                 </ul>
             </div>
