@@ -8,6 +8,3 @@ The frontend is written in Vite using Typescript.
 
 TODO:
 Related to the above, write tests for logic functions
-Edit autocomplete query to use postgres trigram extension
-check tag aliases schema I feel like I'm forgetting something
-Dockerize the backend and frontend with a PostgreSQL image as well.
