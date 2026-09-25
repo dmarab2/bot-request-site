@@ -107,25 +107,27 @@ export default function App() {
     }
 
     return (
-        <div className='grid grid-cols-8 grid-rows-3 gap-4'>
-            <div className="flex flex-col col-span-5 col-start-3">
-                <ul className="bg-gray-800/95 backdrop-blur-lg rounded-lg bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 shadow-xl flex flex-col items-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),_0_4px_12px_rgba(0,0,0,0.6)]">
-                    <RequestLister requestList={requestList} onRequestClick={handleSetRequest} />
-                </ul>
-            </div>
-            <div className="flex flex-col col-span-5 col-start-3 row-start-2">
-                <ViewBox selectedRequest={selectedRequest}  />
-            </div>
-            <div className="flex flex-col col-span-2 col-start-1 row-start-2">
+        <div className='min-h-screen bg-zinc-950/90 bg-[url(./assets/grit.png)] bg-blend-multiply bg-fixed text-zinc-200'>
+            <div className="mx-auto grid max-w-6xl gap-6 p-6 lg:grid-cols-[20rem_1fr]">
+                <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
                 <RequestSearchForm requestList={requestList} setRequestList={setRequestList}/>
+                <NewRequestForm />
+                </aside>
+                <main className='space-y-6'>
+                    <Panel><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></Panel>
+                    <ViewBox selectedRequest={selectedRequest}  />
+                </main>
             </div>
-            <div className="flex flex-col col-span-2 col-start-1 row-start-3 p-4">
-            <NewRequestForm />
-            </div>
-            <aside>
-            </aside>
         </div>
     );
+}
+
+function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <div className={`items-center rounded-xl bg-zinc-900/70 backdrop-blur-md ring-1 ring-white/10 shadow-lg shadow-black/50 inset-shadow-xs inset-shadow-white/10 ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
@@ -135,7 +137,11 @@ function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
         </li>
     );
 
-    return listItems;
+    return (
+        <ul className='items-center'>
+            {listItems}
+        </ul>
+    )
 
 }
 
