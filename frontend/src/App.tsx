@@ -114,7 +114,7 @@ export default function App() {
                 <NewRequestForm />
                 </aside>
                 <main className='space-y-6'>
-                    <Panel><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></Panel>
+                    <Panel className='flex-col'><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></Panel>
                     <ViewBox selectedRequest={selectedRequest}  />
                 </main>
             </div>
@@ -124,7 +124,7 @@ export default function App() {
 
 function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={`items-center rounded-xl bg-zinc-900/70 backdrop-blur-md ring-1 ring-white/10 shadow-lg shadow-black/50 inset-shadow-xs inset-shadow-white/10 ${className}`}>
+    <div className={`flex rounded-xl bg-zinc-900/70 backdrop-blur-md ring-1 ring-white/10 shadow-lg shadow-black/50 inset-shadow-xs inset-shadow-white/10 ${className}`}>
       {children}
     </div>
   );
@@ -138,7 +138,7 @@ function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
     );
 
     return (
-        <ul className='items-center'>
+        <ul className='flex justify-center items-center flex-col'>
             {listItems}
         </ul>
     )
