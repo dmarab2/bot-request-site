@@ -74,6 +74,7 @@ interface RequestJson {
 interface RequestSetterProp {
     requestList: RequestJson;
     onRequestClick: (request: Request) => void
+    selectedRequestID: number
 }
 
 interface tagSearchBoxProps {
@@ -114,7 +115,7 @@ export default function App() {
                 <NewRequestForm />
                 </aside>
                 <main className='space-y-6'>
-                    <Panel className='flex-col'><RequestLister requestList={requestList} onRequestClick={handleSetRequest} /></Panel>
+                    <Panel className='flex-col'><RequestLister requestList={requestList} onRequestClick={handleSetRequest} selectedRequestID={selectedRequest.id} /></Panel>
                     <ViewBox selectedRequest={selectedRequest}  />
                 </main>
             </div>
@@ -130,10 +131,27 @@ function Panel({ className = "", children }: { className?: string; children: Rea
   );
 }
 
-function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
+function RequestLister( { requestList, onRequestClick, selectedRequestID }: RequestSetterProp){
+    
+    const badge: Record<requestStatus, string> = {
+        open: "bg-emerald-500/15 text-emerald-300",
+        in_progress: "bg-amber-500/15 text-amber-300",
+        fulfilled: "bg-indigo-500/15 text-indigo-300",
+        cancelled: "bg-zinc-500/15 text-zinc-400",
+        "": "",
+    };
+
     const listItems = requestList.data.map(request => 
-        <li className="bg-stone-700/50 border-slate-600 border-b hover:bg-indigo-500 active:bg-indigo-700 w-2/3" key={request.id} onClick={() => onRequestClick(request)}>
-            {request.requestText}
+        <li key={request.id}>
+            <button
+                onClick={() => onRequestClick(request)}
+                className={`flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-white/5 ${
+                request.id === selectedRequestID ? "bg-indigo-500/10 border-l-2 border-indigo-400" : "border-l-2 border-transparent"
+                }`}
+            >
+                <span className='truncate'>{request.requestText}</span>
+                <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${badge[request.requestStatus]}`}>{request.requestStatus}</span>
+            </button>
         </li>
     );
 
