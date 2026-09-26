@@ -124,7 +124,7 @@ export default function App() {
 
 function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={`flex rounded-xl bg-zinc-900/70 backdrop-blur-md ring-1 ring-white/10 shadow-lg shadow-black/50 inset-shadow-xs inset-shadow-white/10 ${className}`}>
+    <div className={`flex rounded-xl bg-zinc-850/10 backdrop-blur-md ring-1 ring-white/10 shadow-lg shadow-black/50 inset-shadow-xs inset-shadow-white/10 ${className}`}>
       {children}
     </div>
   );
@@ -132,7 +132,7 @@ function Panel({ className = "", children }: { className?: string; children: Rea
 
 function RequestLister( { requestList, onRequestClick }: RequestSetterProp){
     const listItems = requestList.data.map(request => 
-        <li className="bg-stone-700/50 border-slate-600 border-b hover:bg-blue-500 active:bg-blue-700 w-2/3" key={request.id} onClick={() => onRequestClick(request)}>
+        <li className="bg-stone-700/50 border-slate-600 border-b hover:bg-indigo-500 active:bg-indigo-700 w-2/3" key={request.id} onClick={() => onRequestClick(request)}>
             {request.requestText}
         </li>
     );
