@@ -131,6 +131,14 @@ function Panel({ className = "", children }: { className?: string; children: Rea
   );
 }
 
+function Button({ className = "", onClickFunc, buttonText }: { className?: string; onClickFunc: () => void; buttonText: string }) {
+  return (
+    <button className={`${className} m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]`} onClick={() => onClickFunc()}>
+        {buttonText}
+    </button>
+  );
+}
+
 function RequestLister( { requestList, onRequestClick, selectedRequestID }: RequestSetterProp){
     
     const badge: Record<requestStatus, string> = {
@@ -377,7 +385,7 @@ function NewRequestForm() {
     
     return (
         <>
-            <button type='button' onClick={() => setIsOpen(true)} className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">Make a New Request</button>
+            <Button className='' onClickFunc={() => setIsOpen(true)} buttonText='Make a New Request'></Button>
 
             <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
                 <form onSubmit={formAction}>
