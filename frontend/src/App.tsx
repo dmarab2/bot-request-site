@@ -111,12 +111,12 @@ export default function App() {
         <div className='min-h-screen bg-zinc-950/90 bg-[url(./assets/grit.png)] bg-blend-multiply bg-fixed text-zinc-200'>
             <div className="mx-auto grid max-w-6xl gap-6 p-6 lg:grid-cols-[20rem_1fr]">
                 <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-                <RequestSearchForm requestList={requestList} setRequestList={setRequestList}/>
+                <Panel className='flex flex-col m-5 items-center'><RequestSearchForm requestList={requestList} setRequestList={setRequestList}/></Panel>
                 <NewRequestForm />
                 </aside>
                 <main className='space-y-6'>
                     <Panel className='flex-col'><RequestLister requestList={requestList} onRequestClick={handleSetRequest} selectedRequestID={selectedRequest.id} /></Panel>
-                    <ViewBox selectedRequest={selectedRequest}  />
+                    <Panel className='flex-col'><ViewBox selectedRequest={selectedRequest}  /></Panel>
                 </main>
             </div>
         </div>
@@ -133,7 +133,7 @@ function Panel({ className = "", children }: { className?: string; children: Rea
 
 function Button({ className = "", onClickFunc, buttonText }: { className?: string; onClickFunc: () => void; buttonText: string }) {
   return (
-    <button className={`${className} m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]`} onClick={() => onClickFunc()}>
+    <button className={`${className} m-5 bg-indigo-900/70 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]`} onClick={() => onClickFunc()}>
         {buttonText}
     </button>
   );
@@ -172,18 +172,21 @@ function RequestLister( { requestList, onRequestClick, selectedRequestID }: Requ
 }
 
 function ViewBox( { selectedRequest }: {selectedRequest: Request} ) {
+    const listParas = [
+        <p>Request: {selectedRequest.requestText}</p>,
+        <p>Status: {selectedRequest.requestStatus}</p>,
+        <p>Created on: {selectedRequest.createdAt}</p>
+    ]
     return (
-        <div className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col items-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
-            <p>Request: {selectedRequest.requestText}</p>
-            <p>Status: {selectedRequest.requestStatus}</p>
-            <p>Created on: {selectedRequest.createdAt}</p>
+        <div>
+            {listParas}
         </div>
     )
 }
 
 function RequestSearchForm({ requestList, setRequestList }: formProps){
     return (
-        <div className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-5 border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)] p-4">
+        <div>
             <RequestTextSearch />
             <RequestTagSearch name='tagSearch' />
             <RequestSearchButton setRequestList={setRequestList} />
