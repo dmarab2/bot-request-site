@@ -390,7 +390,7 @@ function NewRequestForm() {
         <>
             <Button className='' onClickFunc={() => setIsOpen(true)} buttonText='Make a New Request'></Button>
 
-            <dialog ref={newRequestRef} className="bg-gray-800 bg-[url(./assets/grit.png)] bg-repeat bg-blend-multiply m-auto border-2 border-gray-600 rounded-xl shadow-xl ring-2 ring-gray-400  shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">
+            <dialog ref={newRequestRef} className={`p-5 rounded-xl bg-zinc-850/10 backdrop-blur-md ring-1 ring-white/10 shadow-lg shadow-black/50 inset-shadow-xs inset-shadow-white/10 m-auto`}>
                 <form onSubmit={formAction}>
                     <div className='flex flex-col min-w-100 min-h-50'>
                         <h2>Enter your request</h2>
