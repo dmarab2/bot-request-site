@@ -394,7 +394,7 @@ function NewRequestForm() {
                 <form onSubmit={formAction}>
                     <div className='flex flex-col min-w-100 min-h-50'>
                         <h2>Enter your request</h2>
-                        <textarea name='requestText' placeholder='Enter your request here.' className='min-h-1/2 m-2 bg-black' onChange={(e) => setTextValue(e.target.value)}></textarea>
+                        <textarea name='requestText' placeholder='Enter your request here.' className='min-h-1/2 px-3 py-2 my-2 bg-black' onChange={(e) => setTextValue(e.target.value)}></textarea>
                         <h2>(Optional): Add tags to your request.</h2>
                         <RequestTagSearch name='requestTags' onParentChange={setTagValue} />
                         <button type="submit" className="m-5 bg-indigo-900 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]">{status === "submitting" ? "Submitting..." : "Submit Request"}</button>
