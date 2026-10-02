@@ -7,4 +7,7 @@ The frontend is written in Vite using Typescript.
 
 
 TODO:
-Related to the above, write tests for logic functions
+Write tests for frontend
+Test the tagging system
+Write request claim system
+Other UI improvements?
