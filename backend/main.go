@@ -249,7 +249,7 @@ func (cfg *apiConfig) linkTagToRequest(w http.ResponseWriter, req *http.Request)
 }
 
 // main loads the .env variables, opens a connection to the postgres database, adds the endpoints the the server multiplexer
-// and starts the server. Right now the server runs on port :8080. This will later run on port :80.
+// and starts the server. Right now the server runs on port :8080. This will later run on port :443.
 func main() {
 	godotenv.Load()
 	dbURL := os.Getenv("DB_URL")
@@ -264,6 +264,7 @@ func main() {
 		Handler: corsHandler,
 	}
 	// root checks the availability of the server for now
+	// NOTE: not being used, delete later?
 	serveMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, you've requested %s\n", r.URL.Path)
 	})
