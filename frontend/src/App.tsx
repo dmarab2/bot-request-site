@@ -131,6 +131,7 @@ function Panel({ className = "", children }: { className?: string; children: Rea
   );
 }
 
+// should add a way to change the color, but I don't know if I should add another color for buttons?
 function Button({ className = "", onClickFunc, buttonText }: { className?: string; onClickFunc: () => void; buttonText: string }) {
   return (
     <button className={`${className} px-3 m-5 bg-indigo-900/70 rounded-xs border-slate-600 shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]`} onClick={() => onClickFunc()}>
