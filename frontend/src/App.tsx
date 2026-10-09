@@ -195,7 +195,6 @@ function RequestSearchForm({ requestList, setRequestList }: formProps){
     )
 }
 
-// shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15),_0_4px_12px_rgba(0,0,0,0.6)]
 function RequestSearchButton({ setRequestList }: searchButtonProps) {
     return (
         <>
