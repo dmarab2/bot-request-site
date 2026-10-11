@@ -41,8 +41,6 @@ const mockRequestList: Request[] = [
 ]
 
 type requestStatus = "open" | "in_progress" | "fulfilled" | "cancelled" | ""
-// gonna comment this out because I don't have a use for it yet but might in the future
-//type elementVisibility = "none" | "flex"
 
 interface Request {
     id: number;
