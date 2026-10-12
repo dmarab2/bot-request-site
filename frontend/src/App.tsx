@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo, useCallback} from 'react';
 import './App.css'
+import './helper_functions.tsx'
 import { useDebouncedSuggestions } from './useDebouncedSuggestions';
 
 const mockRequestList: Request[] = [
