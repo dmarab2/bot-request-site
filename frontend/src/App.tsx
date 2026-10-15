@@ -321,6 +321,7 @@ function RequestTagSearch({ onParentChange, name }: tagSearchBoxProps) {
 }
 
 // I will leave these values here for now, in case I use them for something else later
+// note: what will I use them for?
 function NewRequestForm() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const newRequestRef = useRef<HTMLDialogElement>(null);
