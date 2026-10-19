@@ -411,7 +411,7 @@ function NewRequestForm() {
 
 async function fetchRequestList(): Promise<RequestJson>{
 // note: need to figure out how to change the URL on this.
-// add the other URLs to the env file
+// add the other URLs to the env file probably...
     console.log(`${import.meta.env.VITE_BACKEND_ROOT}${import.meta.env.VITE_BACKEND_GET_OPEN_REQUESTS}`)
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_ROOT}${import.meta.env.VITE_BACKEND_GET_OPEN_REQUESTS}`);
