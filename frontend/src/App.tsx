@@ -474,6 +474,7 @@ function convertRequestPayloadToRequest(payload: RequestPayload): Request{
     return newRequest;
 }
 
+// to pair with above function
 // note: what will this be used for? I'll keep it just in case
 function convertRequestToRequestPayload(request: Request): RequestPayload{
     const newPayload: RequestPayload = {
